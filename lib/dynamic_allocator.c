@@ -141,19 +141,7 @@ void *alloc_block_NF(uint32 size)
 void free_block(void *va)
 {
 	//TODO: [PROJECT'23.MS1 - #7] [3] DYNAMIC ALLOCATOR - free_block()
-	//panic("free_block is not implemented yet");
-	if(va==NULL){
-		cpritf("Enter a valid address");
-		return;
-	}
-	else if(is_free_block(va)){
-		cpritf("block is already free");
-		return;
-	}
-
-	//struct BlockMetaData *curBlkMetaData = ((struct BlockMetaData *)va - 1) ;
-
-
+	panic("free_block is not implemented yet");
 }
 
 //=========================================
