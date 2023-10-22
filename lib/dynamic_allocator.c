@@ -141,7 +141,7 @@ void *alloc_block_NF(uint32 size)
 void free_block(void *va)
 {
 	//TODO: [PROJECT'23.MS1 - #7] [3] DYNAMIC ALLOCATOR - free_block()
-	//panic("free_block is not implemented yet");
+
 	struct BlockMetaData *currBlock = ((struct BlockMetaData *)va - 1) ;
 	struct BlockMetaData *nextBlock= currBlock->prev_next_info.le_next;
 	struct BlockMetaData *prevBlock =currBlock->prev_next_info.le_prev;
@@ -175,6 +175,7 @@ void free_block(void *va)
 
 
 	//struct BlockMetaData *curBlkMetaData = ((struct BlockMetaData *)va - 1) ;
+
 
 
 }
