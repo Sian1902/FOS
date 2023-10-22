@@ -142,14 +142,37 @@ void free_block(void *va)
 {
 	//TODO: [PROJECT'23.MS1 - #7] [3] DYNAMIC ALLOCATOR - free_block()
 	//panic("free_block is not implemented yet");
+	struct BlockMetaData *currBlock = ((struct BlockMetaData *)va - 1) ;
+	struct BlockMetaData *nextBlock= currBlock->prev_next_info.le_next;
+	struct BlockMetaData *prevBlock =currBlock->prev_next_info.le_prev;
 	if(va==NULL){
-		cpritf("Enter a valid address");
+		//cpritf("Enter a valid address");
 		return;
 	}
 	else if(is_free_block(va)){
-		cpritf("block is already free");
+		//cpritf("block is already free");
 		return;
 	}
+	else if (!is_free_block(va)&&!nextBlock->is_free&&!prevBlock->is_free){
+		currBlock->is_free=1;
+	}
+	else if(prevBlock->is_free&&!nextBlock->is_free){
+		prevBlock->size+=currBlock->size;
+		nextBlock->prev_next_info.le_prev=prevBlock;
+		prevBlock->prev_next_info.le_next=nextBlock;
+
+	}
+	else if(!prevBlock->is_free&&nextBlock->is_free){
+		currBlock->size+=nextBlock->size;
+		nextBlock->prev_next_info.le_next->prev_next_info.le_prev=currBlock;
+		currBlock->prev_next_info.le_next=nextBlock->prev_next_info.le_next;
+	}
+	else if(prevBlock->is_free&&nextBlock->is_free){
+		prevBlock->size+=nextBlock->size+currBlock->size;
+		nextBlock->prev_next_info.le_next->prev_next_info.le_prev=prevBlock;
+		prevBlock->prev_next_info.le_next=nextBlock->prev_next_info.le_next;
+		}
+
 
 	//struct BlockMetaData *curBlkMetaData = ((struct BlockMetaData *)va - 1) ;
 
