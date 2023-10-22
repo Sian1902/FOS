@@ -373,12 +373,58 @@ int execute_command(char *command_string)
 	}
 	return 0;
 }
-
-
+bool subSequence(char* str1, char* substr){
+	bool res=0;
+	int len=strlen(str1);
+	int subl=strlen(substr);
+	int subi=0;
+	for (int i=0;i<len;i++){
+		if(str1[i]==substr[subi]){
+			subi++;
+		}
+	}
+	if(subi==subl){
+		res=1;
+	}
+	return res;
+}
+void erase(){
+	struct Command *command;
+	LIST_FOREACH(command,&(foundCommands)){
+		LIST_REMOVE(&foundCommands,command);
+	}
+}
 int process_command(int number_of_arguments, char** arguments)
 {
 	//TODO: [PROJECT'23.MS1 - #2] [1] PLAY WITH CODE! - process_command
 	//Comment the following line before start coding...
-	panic("process_command is not implemented yet");
-	return 0;
+	//panic("process_command is not implemented yet");
+
+
+	int command_found = 0;
+	erase();
+	for (int i = 0; i < NUM_OF_COMMANDS; i++)
+		{
+			int strl= strlen(commands[i].name);
+			if ((strncmp(arguments[0], commands[i].name,strl)) == 0)
+			{
+				if((number_of_arguments-1)==commands[i].num_of_args){
+					command_found=1;
+					return i;
+				}
+				else{
+					LIST_INSERT_TAIL(&foundCommands,&commands[i]);
+					command_found=1;
+					return CMD_INV_NUM_ARGS;
+				}
+			}
+			else if(subSequence(commands[i].name,arguments[0])){
+				command_found=1;
+				LIST_INSERT_TAIL(&foundCommands,&commands[i]);
+			}
+		}
+	if(command_found==0){
+		return CMD_INVALID;
+	}
+	return CMD_MATCHED;
 }
