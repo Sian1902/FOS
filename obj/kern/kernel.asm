@@ -108,7 +108,7 @@ f0100062:	83 ec 08             	sub    $0x8,%esp
 	// clear the uninitialized global data (BSS) section of our program, from start_of_uninitialized_data_section to end_of_kernel
 	// This ensures that all static/global variables start with zero value.
 	memset(start_of_uninitialized_data_section, 0, end_of_kernel - start_of_uninitialized_data_section);
-f0100065:	ba 2c d6 2d f0       	mov    $0xf02dd62c,%edx
+f0100065:	ba 3c d6 2d f0       	mov    $0xf02dd63c,%edx
 f010006a:	b8 d2 1f 25 f0       	mov    $0xf0251fd2,%eax
 f010006f:	29 c2                	sub    %eax,%edx
 f0100071:	89 d0                	mov    %edx,%eax
@@ -4552,10 +4552,10 @@ f01024ab:	68 90 09 13 f0       	push   $0xf0130990
 f01024b0:	e8 7c e9 ff ff       	call   f0100e31 <cprintf>
 f01024b5:	83 c4 10             	add    $0x10,%esp
 	cprintf("  End address of kernel code  			%08x (virt)  %08x (phys)\n", end_of_kernel_code_section, end_of_kernel_code_section - KERNEL_BASE);
-f01024b8:	b8 29 fd 12 00       	mov    $0x12fd29,%eax
+f01024b8:	b8 39 fd 12 00       	mov    $0x12fd39,%eax
 f01024bd:	83 ec 04             	sub    $0x4,%esp
 f01024c0:	50                   	push   %eax
-f01024c1:	68 29 fd 12 f0       	push   $0xf012fd29
+f01024c1:	68 39 fd 12 f0       	push   $0xf012fd39
 f01024c6:	68 cc 09 13 f0       	push   $0xf01309cc
 f01024cb:	e8 61 e9 ff ff       	call   f0100e31 <cprintf>
 f01024d0:	83 c4 10             	add    $0x10,%esp
@@ -4568,16 +4568,16 @@ f01024e1:	68 08 0a 13 f0       	push   $0xf0130a08
 f01024e6:	e8 46 e9 ff ff       	call   f0100e31 <cprintf>
 f01024eb:	83 c4 10             	add    $0x10,%esp
 	cprintf("  End address of the kernel   			%08x (virt)  %08x (phys)\n", end_of_kernel, end_of_kernel - KERNEL_BASE);
-f01024ee:	b8 2c d6 2d 00       	mov    $0x2dd62c,%eax
+f01024ee:	b8 3c d6 2d 00       	mov    $0x2dd63c,%eax
 f01024f3:	83 ec 04             	sub    $0x4,%esp
 f01024f6:	50                   	push   %eax
-f01024f7:	68 2c d6 2d f0       	push   $0xf02dd62c
+f01024f7:	68 3c d6 2d f0       	push   $0xf02dd63c
 f01024fc:	68 50 0a 13 f0       	push   $0xf0130a50
 f0102501:	e8 2b e9 ff ff       	call   f0100e31 <cprintf>
 f0102506:	83 c4 10             	add    $0x10,%esp
 	cprintf("Kernel executable memory footprint: %d KB\n",
 			(end_of_kernel-start_of_kernel+1023)/1024);
-f0102509:	b8 2c d6 2d f0       	mov    $0xf02dd62c,%eax
+f0102509:	b8 3c d6 2d f0       	mov    $0xf02dd63c,%eax
 f010250e:	8d 90 ff 03 00 00    	lea    0x3ff(%eax),%edx
 f0102514:	b8 0c 00 10 f0       	mov    $0xf010000c,%eax
 f0102519:	29 c2                	sub    %eax,%edx
@@ -13109,7 +13109,7 @@ f010691d:	a1 ec ae 2b f0       	mov    0xf02baeec,%eax
 f0106922:	85 c0                	test   %eax,%eax
 f0106924:	75 0a                	jne    f0106930 <boot_allocate_space+0x19>
 		ptr_free_mem = end_of_kernel;
-f0106926:	c7 05 ec ae 2b f0 2c 	movl   $0xf02dd62c,0xf02baeec
+f0106926:	c7 05 ec ae 2b f0 3c 	movl   $0xf02dd63c,0xf02baeec
 f010692d:	d6 2d f0 
 
 	// Your code here:
@@ -25466,13 +25466,13 @@ f010d3f6:	8b 45 08             	mov    0x8(%ebp),%eax
 f010d3f9:	3d ff ff 7f ef       	cmp    $0xef7fffff,%eax
 f010d3fe:	76 1e                	jbe    f010d41e <debuginfo_eip+0x68>
 		stabs = __STAB_BEGIN__;
-f010d400:	c7 45 f4 18 b3 13 f0 	movl   $0xf013b318,-0xc(%ebp)
+f010d400:	c7 45 f4 bc b2 13 f0 	movl   $0xf013b2bc,-0xc(%ebp)
 		stab_end = __STAB_END__;
-f010d407:	c7 45 f0 d0 6c 17 f0 	movl   $0xf0176cd0,-0x10(%ebp)
+f010d407:	c7 45 f0 ec 6c 17 f0 	movl   $0xf0176cec,-0x10(%ebp)
 		stabstr = __STABSTR_BEGIN__;
-f010d40e:	c7 45 ec d1 6c 17 f0 	movl   $0xf0176cd1,-0x14(%ebp)
+f010d40e:	c7 45 ec ed 6c 17 f0 	movl   $0xf0176ced,-0x14(%ebp)
 		stabstr_end = __STABSTR_END__;
-f010d415:	c7 45 e8 d6 39 18 f0 	movl   $0xf01839d6,-0x18(%ebp)
+f010d415:	c7 45 e8 18 3a 18 f0 	movl   $0xf0183a18,-0x18(%ebp)
 f010d41c:	eb 2a                	jmp    f010d448 <debuginfo_eip+0x92>
 		// The user-application linker script, user/user.ld,
 		// puts information about the application's stabs (equivalent
@@ -28357,7 +28357,7 @@ f010ea17:	c1 e0 03             	shl    $0x3,%eax
 f010ea1a:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010ea21:	83 ec 0c             	sub    $0xc,%esp
 f010ea24:	50                   	push   %eax
-f010ea25:	e8 4a 0f 02 00       	call   f012f974 <free_block>
+f010ea25:	e8 6f 0f 02 00       	call   f012f999 <free_block>
 f010ea2a:	83 c4 10             	add    $0x10,%esp
 	cprintf("====================================================\n") ;
 	cprintf("SECOND: Tests depend on BOTH Allocate and Free [60%] \n") ;
@@ -28813,7 +28813,7 @@ f010ee21:	c1 e0 03             	shl    $0x3,%eax
 f010ee24:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010ee2b:	83 ec 0c             	sub    $0xc,%esp
 f010ee2e:	50                   	push   %eax
-f010ee2f:	e8 40 0b 02 00       	call   f012f974 <free_block>
+f010ee2f:	e8 65 0b 02 00       	call   f012f999 <free_block>
 f010ee34:	83 c4 10             	add    $0x10,%esp
 	cprintf("=================================================\n") ;
 	cprintf("SECOND: Tests depend on BOTH Allocate and Free \n") ;
@@ -29569,7 +29569,7 @@ f010f528:	c1 e0 03             	shl    $0x3,%eax
 f010f52b:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010f532:	83 ec 0c             	sub    $0xc,%esp
 f010f535:	50                   	push   %eax
-f010f536:	e8 39 04 02 00       	call   f012f974 <free_block>
+f010f536:	e8 5e 04 02 00       	call   f012f999 <free_block>
 f010f53b:	83 c4 10             	add    $0x10,%esp
 		uint32 block_size = get_block_size(startVAs[i*allocCntPerSize]) ;
 f010f53e:	8b 55 d0             	mov    -0x30(%ebp),%edx
@@ -29667,7 +29667,7 @@ f010f60d:	c7 45 f0 01 00 00 00 	movl   $0x1,-0x10(%ebp)
 f010f614:	a1 20 aa 2d f0       	mov    0xf02daa20,%eax
 f010f619:	83 ec 0c             	sub    $0xc,%esp
 f010f61c:	50                   	push   %eax
-f010f61d:	e8 52 03 02 00       	call   f012f974 <free_block>
+f010f61d:	e8 77 03 02 00       	call   f012f999 <free_block>
 f010f622:	83 c4 10             	add    $0x10,%esp
 	uint32 block_size = get_block_size(startVAs[numOfAllocs*allocCntPerSize]) ;
 f010f625:	a1 20 aa 2d f0       	mov    0xf02daa20,%eax
@@ -29745,7 +29745,7 @@ f010f6d0:	83 c4 10             	add    $0x10,%esp
 f010f6d3:	a1 1c aa 2d f0       	mov    0xf02daa1c,%eax
 f010f6d8:	83 ec 0c             	sub    $0xc,%esp
 f010f6db:	50                   	push   %eax
-f010f6dc:	e8 93 02 02 00       	call   f012f974 <free_block>
+f010f6dc:	e8 b8 02 02 00       	call   f012f999 <free_block>
 f010f6e1:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[numOfAllocs*allocCntPerSize - 1]) ;
 f010f6e4:	a1 1c aa 2d f0       	mov    0xf02daa1c,%eax
@@ -29821,7 +29821,7 @@ f010f794:	83 c4 10             	add    $0x10,%esp
 f010f797:	a1 44 94 2d f0       	mov    0xf02d9444,%eax
 f010f79c:	83 ec 0c             	sub    $0xc,%esp
 f010f79f:	50                   	push   %eax
-f010f7a0:	e8 cf 01 02 00       	call   f012f974 <free_block>
+f010f7a0:	e8 f4 01 02 00       	call   f012f999 <free_block>
 f010f7a5:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[1]) ;
 f010f7a8:	a1 44 94 2d f0       	mov    0xf02d9444,%eax
@@ -29896,7 +29896,7 @@ f010f84f:	8b 45 ac             	mov    -0x54(%ebp),%eax
 f010f852:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010f859:	83 ec 0c             	sub    $0xc,%esp
 f010f85c:	50                   	push   %eax
-f010f85d:	e8 12 01 02 00       	call   f012f974 <free_block>
+f010f85d:	e8 37 01 02 00       	call   f012f999 <free_block>
 f010f862:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex-1]) ;
 f010f865:	8b 45 ac             	mov    -0x54(%ebp),%eax
@@ -29990,7 +29990,7 @@ f010f94e:	8b 45 ac             	mov    -0x54(%ebp),%eax
 f010f951:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010f958:	83 ec 0c             	sub    $0xc,%esp
 f010f95b:	50                   	push   %eax
-f010f95c:	e8 13 00 02 00       	call   f012f974 <free_block>
+f010f95c:	e8 38 00 02 00       	call   f012f999 <free_block>
 f010f961:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex-1]) ;
 f010f964:	8b 45 ac             	mov    -0x54(%ebp),%eax
@@ -30099,7 +30099,7 @@ f010fa72:	8b 45 ac             	mov    -0x54(%ebp),%eax
 f010fa75:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010fa7c:	83 ec 0c             	sub    $0xc,%esp
 f010fa7f:	50                   	push   %eax
-f010fa80:	e8 ef fe 01 00       	call   f012f974 <free_block>
+f010fa80:	e8 14 ff 01 00       	call   f012f999 <free_block>
 f010fa85:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex]) ;
 f010fa88:	8b 45 ac             	mov    -0x54(%ebp),%eax
@@ -30192,7 +30192,7 @@ f010fb75:	8b 45 ac             	mov    -0x54(%ebp),%eax
 f010fb78:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010fb7f:	83 ec 0c             	sub    $0xc,%esp
 f010fb82:	50                   	push   %eax
-f010fb83:	e8 ec fd 01 00       	call   f012f974 <free_block>
+f010fb83:	e8 11 fe 01 00       	call   f012f999 <free_block>
 f010fb88:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex]) ;
 f010fb8b:	8b 45 ac             	mov    -0x54(%ebp),%eax
@@ -30294,7 +30294,7 @@ f010fc89:	8b 45 ac             	mov    -0x54(%ebp),%eax
 f010fc8c:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010fc93:	83 ec 0c             	sub    $0xc,%esp
 f010fc96:	50                   	push   %eax
-f010fc97:	e8 d8 fc 01 00       	call   f012f974 <free_block>
+f010fc97:	e8 fd fc 01 00       	call   f012f999 <free_block>
 f010fc9c:	83 c4 10             	add    $0x10,%esp
 
 	blockIndex = 4*allocCntPerSize - 1 ;
@@ -30304,7 +30304,7 @@ f010fca6:	8b 45 ac             	mov    -0x54(%ebp),%eax
 f010fca9:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f010fcb0:	83 ec 0c             	sub    $0xc,%esp
 f010fcb3:	50                   	push   %eax
-f010fcb4:	e8 bb fc 01 00       	call   f012f974 <free_block>
+f010fcb4:	e8 e0 fc 01 00       	call   f012f999 <free_block>
 f010fcb9:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex-1]) ;
 f010fcbc:	8b 45 ac             	mov    -0x54(%ebp),%eax
@@ -31000,7 +31000,7 @@ f0110376:	c1 e0 03             	shl    $0x3,%eax
 f0110379:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f0110380:	83 ec 0c             	sub    $0xc,%esp
 f0110383:	50                   	push   %eax
-f0110384:	e8 eb f5 01 00       	call   f012f974 <free_block>
+f0110384:	e8 10 f6 01 00       	call   f012f999 <free_block>
 f0110389:	83 c4 10             	add    $0x10,%esp
 		uint32 block_size = get_block_size(startVAs[i*allocCntPerSize]) ;
 f011038c:	8b 55 d8             	mov    -0x28(%ebp),%edx
@@ -31073,7 +31073,7 @@ f011043f:	0f 8e 1e ff ff ff    	jle    f0110363 <test_free_block_BF+0x32e>
 f0110445:	a1 20 aa 2d f0       	mov    0xf02daa20,%eax
 f011044a:	83 ec 0c             	sub    $0xc,%esp
 f011044d:	50                   	push   %eax
-f011044e:	e8 21 f5 01 00       	call   f012f974 <free_block>
+f011044e:	e8 46 f5 01 00       	call   f012f999 <free_block>
 f0110453:	83 c4 10             	add    $0x10,%esp
 	uint32 block_size = get_block_size(startVAs[numOfAllocs*allocCntPerSize]) ;
 f0110456:	a1 20 aa 2d f0       	mov    0xf02daa20,%eax
@@ -31143,7 +31143,7 @@ f01104ff:	e8 ac fc fe ff       	call   f01001b0 <_panic>
 f0110504:	a1 1c aa 2d f0       	mov    0xf02daa1c,%eax
 f0110509:	83 ec 0c             	sub    $0xc,%esp
 f011050c:	50                   	push   %eax
-f011050d:	e8 62 f4 01 00       	call   f012f974 <free_block>
+f011050d:	e8 87 f4 01 00       	call   f012f999 <free_block>
 f0110512:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[numOfAllocs*allocCntPerSize - 1]) ;
 f0110515:	a1 1c aa 2d f0       	mov    0xf02daa1c,%eax
@@ -31212,7 +31212,7 @@ f01105c3:	e8 e8 fb fe ff       	call   f01001b0 <_panic>
 f01105c8:	a1 44 94 2d f0       	mov    0xf02d9444,%eax
 f01105cd:	83 ec 0c             	sub    $0xc,%esp
 f01105d0:	50                   	push   %eax
-f01105d1:	e8 9e f3 01 00       	call   f012f974 <free_block>
+f01105d1:	e8 c3 f3 01 00       	call   f012f999 <free_block>
 f01105d6:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[1]) ;
 f01105d9:	a1 44 94 2d f0       	mov    0xf02d9444,%eax
@@ -31271,7 +31271,7 @@ f011066f:	8b 45 b4             	mov    -0x4c(%ebp),%eax
 f0110672:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f0110679:	83 ec 0c             	sub    $0xc,%esp
 f011067c:	50                   	push   %eax
-f011067d:	e8 f2 f2 01 00       	call   f012f974 <free_block>
+f011067d:	e8 17 f3 01 00       	call   f012f999 <free_block>
 f0110682:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex-1]) ;
 f0110685:	8b 45 b4             	mov    -0x4c(%ebp),%eax
@@ -31356,7 +31356,7 @@ f011076e:	8b 45 b4             	mov    -0x4c(%ebp),%eax
 f0110771:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f0110778:	83 ec 0c             	sub    $0xc,%esp
 f011077b:	50                   	push   %eax
-f011077c:	e8 f3 f1 01 00       	call   f012f974 <free_block>
+f011077c:	e8 18 f2 01 00       	call   f012f999 <free_block>
 f0110781:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex-1]) ;
 f0110784:	8b 45 b4             	mov    -0x4c(%ebp),%eax
@@ -31446,7 +31446,7 @@ f0110881:	8b 45 b4             	mov    -0x4c(%ebp),%eax
 f0110884:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f011088b:	83 ec 0c             	sub    $0xc,%esp
 f011088e:	50                   	push   %eax
-f011088f:	e8 e0 f0 01 00       	call   f012f974 <free_block>
+f011088f:	e8 05 f1 01 00       	call   f012f999 <free_block>
 f0110894:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex]) ;
 f0110897:	8b 45 b4             	mov    -0x4c(%ebp),%eax
@@ -31531,7 +31531,7 @@ f0110984:	8b 45 b4             	mov    -0x4c(%ebp),%eax
 f0110987:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f011098e:	83 ec 0c             	sub    $0xc,%esp
 f0110991:	50                   	push   %eax
-f0110992:	e8 dd ef 01 00       	call   f012f974 <free_block>
+f0110992:	e8 02 f0 01 00       	call   f012f999 <free_block>
 f0110997:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex]) ;
 f011099a:	8b 45 b4             	mov    -0x4c(%ebp),%eax
@@ -31616,7 +31616,7 @@ f0110a87:	8b 45 b4             	mov    -0x4c(%ebp),%eax
 f0110a8a:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f0110a91:	83 ec 0c             	sub    $0xc,%esp
 f0110a94:	50                   	push   %eax
-f0110a95:	e8 da ee 01 00       	call   f012f974 <free_block>
+f0110a95:	e8 ff ee 01 00       	call   f012f999 <free_block>
 f0110a9a:	83 c4 10             	add    $0x10,%esp
 
 	blockIndex = 4*allocCntPerSize - 1 ;
@@ -31626,7 +31626,7 @@ f0110aa4:	8b 45 b4             	mov    -0x4c(%ebp),%eax
 f0110aa7:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f0110aae:	83 ec 0c             	sub    $0xc,%esp
 f0110ab1:	50                   	push   %eax
-f0110ab2:	e8 bd ee 01 00       	call   f012f974 <free_block>
+f0110ab2:	e8 e2 ee 01 00       	call   f012f999 <free_block>
 f0110ab7:	83 c4 10             	add    $0x10,%esp
 	block_size = get_block_size(startVAs[blockIndex-1]) ;
 f0110aba:	8b 45 b4             	mov    -0x4c(%ebp),%eax
@@ -32106,7 +32106,7 @@ f0110f7c:	89 45 c0             	mov    %eax,-0x40(%ebp)
 f0110f7f:	83 ec 08             	sub    $0x8,%esp
 f0110f82:	ff 75 c0             	pushl  -0x40(%ebp)
 f0110f85:	6a 00                	push   $0x0
-f0110f87:	e8 1c eb 01 00       	call   f012faa8 <realloc_block_FF>
+f0110f87:	e8 41 eb 01 00       	call   f012facd <realloc_block_FF>
 f0110f8c:	83 c4 10             	add    $0x10,%esp
 f0110f8f:	89 c2                	mov    %eax,%edx
 f0110f91:	8b 45 e4             	mov    -0x1c(%ebp),%eax
@@ -32200,7 +32200,7 @@ f011106b:	89 45 c0             	mov    %eax,-0x40(%ebp)
 f011106e:	83 ec 08             	sub    $0x8,%esp
 f0111071:	ff 75 c0             	pushl  -0x40(%ebp)
 f0111074:	6a 00                	push   $0x0
-f0111076:	e8 2d ea 01 00       	call   f012faa8 <realloc_block_FF>
+f0111076:	e8 52 ea 01 00       	call   f012facd <realloc_block_FF>
 f011107b:	83 c4 10             	add    $0x10,%esp
 f011107e:	89 c2                	mov    %eax,%edx
 f0111080:	8b 45 e4             	mov    -0x1c(%ebp),%eax
@@ -32337,7 +32337,7 @@ f01111c7:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f01111ce:	83 ec 08             	sub    $0x8,%esp
 f01111d1:	6a 00                	push   $0x0
 f01111d3:	50                   	push   %eax
-f01111d4:	e8 cf e8 01 00       	call   f012faa8 <realloc_block_FF>
+f01111d4:	e8 f4 e8 01 00       	call   f012facd <realloc_block_FF>
 f01111d9:	83 c4 10             	add    $0x10,%esp
 f01111dc:	89 45 bc             	mov    %eax,-0x44(%ebp)
 		uint32 block_size = get_block_size(startVAs[i*allocCntPerSize]) ;
@@ -32420,7 +32420,7 @@ f01112af:	0f 8e fc fe ff ff    	jle    f01111b1 <test_realloc_block_FF+0x34d>
 f01112b5:	83 ec 08             	sub    $0x8,%esp
 f01112b8:	6a 00                	push   $0x0
 f01112ba:	6a 00                	push   $0x0
-f01112bc:	e8 e7 e7 01 00       	call   f012faa8 <realloc_block_FF>
+f01112bc:	e8 0c e8 01 00       	call   f012facd <realloc_block_FF>
 f01112c1:	83 c4 10             	add    $0x10,%esp
 f01112c4:	89 45 bc             	mov    %eax,-0x44(%ebp)
 	if(va != NULL)
@@ -32540,7 +32540,7 @@ f01113ba:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f01113c1:	83 ec 08             	sub    $0x8,%esp
 f01113c4:	52                   	push   %edx
 f01113c5:	50                   	push   %eax
-f01113c6:	e8 dd e6 01 00       	call   f012faa8 <realloc_block_FF>
+f01113c6:	e8 02 e7 01 00       	call   f012facd <realloc_block_FF>
 f01113cb:	83 c4 10             	add    $0x10,%esp
 f01113ce:	89 45 bc             	mov    %eax,-0x44(%ebp)
 
@@ -32707,7 +32707,7 @@ f011156e:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f0111575:	83 ec 08             	sub    $0x8,%esp
 f0111578:	52                   	push   %edx
 f0111579:	50                   	push   %eax
-f011157a:	e8 29 e5 01 00       	call   f012faa8 <realloc_block_FF>
+f011157a:	e8 4e e5 01 00       	call   f012facd <realloc_block_FF>
 f011157f:	83 c4 10             	add    $0x10,%esp
 f0111582:	89 45 bc             	mov    %eax,-0x44(%ebp)
 
@@ -32881,7 +32881,7 @@ f0111730:	8b 04 85 40 94 2d f0 	mov    -0xfd26bc0(,%eax,4),%eax
 f0111737:	83 ec 08             	sub    $0x8,%esp
 f011173a:	52                   	push   %edx
 f011173b:	50                   	push   %eax
-f011173c:	e8 67 e3 01 00       	call   f012faa8 <realloc_block_FF>
+f011173c:	e8 8c e3 01 00       	call   f012facd <realloc_block_FF>
 f0111741:	83 c4 10             	add    $0x10,%esp
 f0111744:	89 45 bc             	mov    %eax,-0x44(%ebp)
 
@@ -37020,7 +37020,7 @@ f011419e:	c6 45 e3 01          	movb   $0x1,-0x1d(%ebp)
 
 		extern char end_of_kernel[];
 		uint32 endRange = ((uint32)end_of_kernel - KERNEL_BASE);
-f01141a2:	b8 2c d6 2d f0       	mov    $0xf02dd62c,%eax
+f01141a2:	b8 3c d6 2d f0       	mov    $0xf02dd63c,%eax
 f01141a7:	05 00 00 00 10       	add    $0x10000000,%eax
 f01141ac:	89 45 a4             	mov    %eax,-0x5c(%ebp)
 		if (CCP(proc_directory, 0xF0000000+PHYS_IO_MEM, 0x40000000+PHYS_IO_MEM, endRange - PHYS_IO_MEM, 2, 0xE03, 0xE07, 0x003, 0x007, CHK_SHARE) == 0)
@@ -59844,7 +59844,7 @@ f0124cf4:	e8 b7 b4 fd ff       	call   f01001b0 <_panic>
 		uint32 i;
 		for (i = 1*Mega; i < (uint32)(end_of_kernel - KERNEL_BASE); i+=PAGE_SIZE)
 f0124cf9:	81 45 d4 00 10 00 00 	addl   $0x1000,-0x2c(%ebp)
-f0124d00:	b8 2c d6 2d 00       	mov    $0x2dd62c,%eax
+f0124d00:	b8 3c d6 2d 00       	mov    $0x2dd63c,%eax
 f0124d05:	39 45 d4             	cmp    %eax,-0x2c(%ebp)
 f0124d08:	72 a2                	jb     f0124cac <test_kheap_virt_addr+0x1037>
 				panic("Wrong kheap_virtual_address");
@@ -73559,7 +73559,7 @@ f012e5bd:	52                   	push   %edx
 f012e5be:	50                   	push   %eax
 f012e5bf:	ff 75 f4             	pushl  -0xc(%ebp)
 f012e5c2:	ff 75 f0             	pushl  -0x10(%ebp)
-f012e5c5:	e8 fe 14 00 00       	call   f012fac8 <__udivdi3>
+f012e5c5:	e8 0e 15 00 00       	call   f012fad8 <__udivdi3>
 f012e5ca:	83 c4 10             	add    $0x10,%esp
 f012e5cd:	83 ec 04             	sub    $0x4,%esp
 f012e5d0:	ff 75 20             	pushl  0x20(%ebp)
@@ -73604,7 +73604,7 @@ f012e611:	53                   	push   %ebx
 f012e612:	51                   	push   %ecx
 f012e613:	52                   	push   %edx
 f012e614:	50                   	push   %eax
-f012e615:	e8 be 15 00 00       	call   f012fbd8 <__umoddi3>
+f012e615:	e8 ce 15 00 00       	call   f012fbe8 <__umoddi3>
 f012e61a:	83 c4 10             	add    $0x10,%esp
 f012e61d:	05 94 af 13 f0       	add    $0xf013af94,%eax
 f012e622:	8a 00                	mov    (%eax),%al
@@ -76335,7 +76335,7 @@ f012f7f8:	eb 4c                	jmp    f012f846 <alloc_block+0x79>
 		va = alloc_block_FF(size);
 f012f7fa:	83 ec 0c             	sub    $0xc,%esp
 f012f7fd:	ff 75 08             	pushl  0x8(%ebp)
-f012f800:	e8 04 01 00 00       	call   f012f909 <alloc_block_FF>
+f012f800:	e8 26 01 00 00       	call   f012f92b <alloc_block_FF>
 f012f805:	83 c4 10             	add    $0x10,%esp
 f012f808:	89 45 f4             	mov    %eax,-0xc(%ebp)
 		break;
@@ -76344,7 +76344,7 @@ f012f80b:	eb 4a                	jmp    f012f857 <alloc_block+0x8a>
 		va = alloc_block_NF(size);
 f012f80d:	83 ec 0c             	sub    $0xc,%esp
 f012f810:	ff 75 08             	pushl  0x8(%ebp)
-f012f813:	e8 3f 01 00 00       	call   f012f957 <alloc_block_NF>
+f012f813:	e8 64 01 00 00       	call   f012f97c <alloc_block_NF>
 f012f818:	83 c4 10             	add    $0x10,%esp
 f012f81b:	89 45 f4             	mov    %eax,-0xc(%ebp)
 		break;
@@ -76353,7 +76353,7 @@ f012f81e:	eb 37                	jmp    f012f857 <alloc_block+0x8a>
 		va = alloc_block_BF(size);
 f012f820:	83 ec 0c             	sub    $0xc,%esp
 f012f823:	ff 75 08             	pushl  0x8(%ebp)
-f012f826:	e8 f8 00 00 00       	call   f012f923 <alloc_block_BF>
+f012f826:	e8 1a 01 00 00       	call   f012f945 <alloc_block_BF>
 f012f82b:	83 c4 10             	add    $0x10,%esp
 f012f82e:	89 45 f4             	mov    %eax,-0xc(%ebp)
 		break;
@@ -76362,7 +76362,7 @@ f012f831:	eb 24                	jmp    f012f857 <alloc_block+0x8a>
 		va = alloc_block_WF(size);
 f012f833:	83 ec 0c             	sub    $0xc,%esp
 f012f836:	ff 75 08             	pushl  0x8(%ebp)
-f012f839:	e8 ff 00 00 00       	call   f012f93d <alloc_block_WF>
+f012f839:	e8 21 01 00 00       	call   f012f95f <alloc_block_WF>
 f012f83e:	83 c4 10             	add    $0x10,%esp
 f012f841:	89 45 f4             	mov    %eax,-0xc(%ebp)
 		break;
@@ -76459,562 +76459,575 @@ f012f8e6 <initialize_dynamic_allocator>:
 //==================================
 // [1] INITIALIZE DYNAMIC ALLOCATOR:
 //==================================
-void initialize_dynamic_allocator(uint32 daStart, uint32 initSizeOfAllocatedSpace)
+void initialize_dynamic_allocator(uint32 daStart , uint32 initSizeOfAllocatedSpace)
 {
 f012f8e6:	55                   	push   %ebp
 f012f8e7:	89 e5                	mov    %esp,%ebp
-f012f8e9:	83 ec 08             	sub    $0x8,%esp
+f012f8e9:	83 ec 10             	sub    $0x10,%esp
 	//=========================================
 	//DON'T CHANGE THESE LINES=================
 	if (initSizeOfAllocatedSpace == 0)
 f012f8ec:	83 7d 0c 00          	cmpl   $0x0,0xc(%ebp)
-f012f8f0:	74 14                	je     f012f906 <initialize_dynamic_allocator+0x20>
-		return ;
+f012f8f0:	74 36                	je     f012f928 <initialize_dynamic_allocator+0x42>
 	//=========================================
 	//=========================================
 
 	//TODO: [PROJECT'23.MS1 - #5] [3] DYNAMIC ALLOCATOR - initialize_dynamic_allocator()
-	panic("initialize_dynamic_allocator is not implemented yet");
-f012f8f2:	83 ec 04             	sub    $0x4,%esp
-f012f8f5:	68 04 b2 13 f0       	push   $0xf013b204
-f012f8fa:	6a 62                	push   $0x62
-f012f8fc:	68 38 b2 13 f0       	push   $0xf013b238
-f012f901:	e8 aa 08 fd ff       	call   f01001b0 <_panic>
-void initialize_dynamic_allocator(uint32 daStart, uint32 initSizeOfAllocatedSpace)
+	//panic("initialize_dynamic_allocator is not implemented yet");
+	struct BlockMetaData* firstMeta=(struct BlockMetaData*)daStart;;
+f012f8f2:	8b 45 08             	mov    0x8(%ebp),%eax
+f012f8f5:	89 45 fc             	mov    %eax,-0x4(%ebp)
+	Heap_MetaBlock.lh_first = firstMeta;
+f012f8f8:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f8fb:	a3 2c d6 2d f0       	mov    %eax,0xf02dd62c
+	firstMeta->prev_next_info.le_next = NULL;
+f012f900:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f903:	c7 40 08 00 00 00 00 	movl   $0x0,0x8(%eax)
+	firstMeta->prev_next_info.le_prev = NULL;
+f012f90a:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f90d:	c7 40 0c 00 00 00 00 	movl   $0x0,0xc(%eax)
+	firstMeta->is_free = 1;
+f012f914:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f917:	c6 40 04 01          	movb   $0x1,0x4(%eax)
+	firstMeta->size = initSizeOfAllocatedSpace-sizeOfMetaData();
+f012f91b:	8b 45 0c             	mov    0xc(%ebp),%eax
+f012f91e:	8d 50 f0             	lea    -0x10(%eax),%edx
+f012f921:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f924:	89 10                	mov    %edx,(%eax)
+f012f926:	eb 01                	jmp    f012f929 <initialize_dynamic_allocator+0x43>
+void initialize_dynamic_allocator(uint32 daStart , uint32 initSizeOfAllocatedSpace)
 {
 	//=========================================
 	//DON'T CHANGE THESE LINES=================
 	if (initSizeOfAllocatedSpace == 0)
 		return ;
-f012f906:	90                   	nop
-	//=========================================
-	//=========================================
+f012f928:	90                   	nop
+	firstMeta->prev_next_info.le_prev = NULL;
+	firstMeta->is_free = 1;
+	firstMeta->size = initSizeOfAllocatedSpace-sizeOfMetaData();
 
-	//TODO: [PROJECT'23.MS1 - #5] [3] DYNAMIC ALLOCATOR - initialize_dynamic_allocator()
-	panic("initialize_dynamic_allocator is not implemented yet");
+
 }
-f012f907:	c9                   	leave  
-f012f908:	c3                   	ret    
+f012f929:	c9                   	leave  
+f012f92a:	c3                   	ret    
 
-f012f909 <alloc_block_FF>:
+f012f92b <alloc_block_FF>:
 
 //=========================================
 // [4] ALLOCATE BLOCK BY FIRST FIT:
 //=========================================
 void *alloc_block_FF(uint32 size)
 {
-f012f909:	55                   	push   %ebp
-f012f90a:	89 e5                	mov    %esp,%ebp
-f012f90c:	83 ec 08             	sub    $0x8,%esp
+f012f92b:	55                   	push   %ebp
+f012f92c:	89 e5                	mov    %esp,%ebp
+f012f92e:	83 ec 08             	sub    $0x8,%esp
 	//TODO: [PROJECT'23.MS1 - #6] [3] DYNAMIC ALLOCATOR - alloc_block_FF()
 	panic("alloc_block_FF is not implemented yet");
-f012f90f:	83 ec 04             	sub    $0x4,%esp
-f012f912:	68 50 b2 13 f0       	push   $0xf013b250
-f012f917:	6a 6b                	push   $0x6b
-f012f919:	68 38 b2 13 f0       	push   $0xf013b238
-f012f91e:	e8 8d 08 fd ff       	call   f01001b0 <_panic>
+f012f931:	83 ec 04             	sub    $0x4,%esp
+f012f934:	68 04 b2 13 f0       	push   $0xf013b204
+f012f939:	6a 74                	push   $0x74
+f012f93b:	68 2a b2 13 f0       	push   $0xf013b22a
+f012f940:	e8 6b 08 fd ff       	call   f01001b0 <_panic>
 
-f012f923 <alloc_block_BF>:
+f012f945 <alloc_block_BF>:
 }
 //=========================================
 // [5] ALLOCATE BLOCK BY BEST FIT:
 //=========================================
 void *alloc_block_BF(uint32 size)
 {
-f012f923:	55                   	push   %ebp
-f012f924:	89 e5                	mov    %esp,%ebp
-f012f926:	83 ec 08             	sub    $0x8,%esp
+f012f945:	55                   	push   %ebp
+f012f946:	89 e5                	mov    %esp,%ebp
+f012f948:	83 ec 08             	sub    $0x8,%esp
 	//TODO: [PROJECT'23.MS1 - BONUS] [3] DYNAMIC ALLOCATOR - alloc_block_BF()
 	panic("alloc_block_BF is not implemented yet");
-f012f929:	83 ec 04             	sub    $0x4,%esp
-f012f92c:	68 78 b2 13 f0       	push   $0xf013b278
-f012f931:	6a 74                	push   $0x74
-f012f933:	68 38 b2 13 f0       	push   $0xf013b238
-f012f938:	e8 73 08 fd ff       	call   f01001b0 <_panic>
+f012f94b:	83 ec 04             	sub    $0x4,%esp
+f012f94e:	68 44 b2 13 f0       	push   $0xf013b244
+f012f953:	6a 7d                	push   $0x7d
+f012f955:	68 2a b2 13 f0       	push   $0xf013b22a
+f012f95a:	e8 51 08 fd ff       	call   f01001b0 <_panic>
 
-f012f93d <alloc_block_WF>:
+f012f95f <alloc_block_WF>:
 
 //=========================================
 // [6] ALLOCATE BLOCK BY WORST FIT:
 //=========================================
 void *alloc_block_WF(uint32 size)
 {
-f012f93d:	55                   	push   %ebp
-f012f93e:	89 e5                	mov    %esp,%ebp
-f012f940:	83 ec 08             	sub    $0x8,%esp
+f012f95f:	55                   	push   %ebp
+f012f960:	89 e5                	mov    %esp,%ebp
+f012f962:	83 ec 08             	sub    $0x8,%esp
 	panic("alloc_block_WF is not implemented yet");
-f012f943:	83 ec 04             	sub    $0x4,%esp
-f012f946:	68 a0 b2 13 f0       	push   $0xf013b2a0
-f012f94b:	6a 7d                	push   $0x7d
-f012f94d:	68 38 b2 13 f0       	push   $0xf013b238
-f012f952:	e8 59 08 fd ff       	call   f01001b0 <_panic>
+f012f965:	83 ec 04             	sub    $0x4,%esp
+f012f968:	68 6c b2 13 f0       	push   $0xf013b26c
+f012f96d:	68 86 00 00 00       	push   $0x86
+f012f972:	68 2a b2 13 f0       	push   $0xf013b22a
+f012f977:	e8 34 08 fd ff       	call   f01001b0 <_panic>
 
-f012f957 <alloc_block_NF>:
+f012f97c <alloc_block_NF>:
 
 //=========================================
 // [7] ALLOCATE BLOCK BY NEXT FIT:
 //=========================================
 void *alloc_block_NF(uint32 size)
 {
-f012f957:	55                   	push   %ebp
-f012f958:	89 e5                	mov    %esp,%ebp
-f012f95a:	83 ec 08             	sub    $0x8,%esp
+f012f97c:	55                   	push   %ebp
+f012f97d:	89 e5                	mov    %esp,%ebp
+f012f97f:	83 ec 08             	sub    $0x8,%esp
 	panic("alloc_block_NF is not implemented yet");
-f012f95d:	83 ec 04             	sub    $0x4,%esp
-f012f960:	68 c8 b2 13 f0       	push   $0xf013b2c8
-f012f965:	68 86 00 00 00       	push   $0x86
-f012f96a:	68 38 b2 13 f0       	push   $0xf013b238
-f012f96f:	e8 3c 08 fd ff       	call   f01001b0 <_panic>
+f012f982:	83 ec 04             	sub    $0x4,%esp
+f012f985:	68 94 b2 13 f0       	push   $0xf013b294
+f012f98a:	68 8f 00 00 00       	push   $0x8f
+f012f98f:	68 2a b2 13 f0       	push   $0xf013b22a
+f012f994:	e8 17 08 fd ff       	call   f01001b0 <_panic>
 
-f012f974 <free_block>:
+f012f999 <free_block>:
 
 //===================================================
 // [8] FREE BLOCK WITH COALESCING:
 //===================================================
 void free_block(void *va)
 {
-f012f974:	55                   	push   %ebp
-f012f975:	89 e5                	mov    %esp,%ebp
-f012f977:	83 ec 10             	sub    $0x10,%esp
+f012f999:	55                   	push   %ebp
+f012f99a:	89 e5                	mov    %esp,%ebp
+f012f99c:	83 ec 10             	sub    $0x10,%esp
 	//TODO: [PROJECT'23.MS1 - #7] [3] DYNAMIC ALLOCATOR - free_block()
 
 	struct BlockMetaData *currBlock = ((struct BlockMetaData *)va - 1) ;
-f012f97a:	8b 45 08             	mov    0x8(%ebp),%eax
-f012f97d:	83 e8 10             	sub    $0x10,%eax
-f012f980:	89 45 fc             	mov    %eax,-0x4(%ebp)
+f012f99f:	8b 45 08             	mov    0x8(%ebp),%eax
+f012f9a2:	83 e8 10             	sub    $0x10,%eax
+f012f9a5:	89 45 fc             	mov    %eax,-0x4(%ebp)
 	struct BlockMetaData *nextBlock= currBlock->prev_next_info.le_next;
-f012f983:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012f986:	8b 40 08             	mov    0x8(%eax),%eax
-f012f989:	89 45 f8             	mov    %eax,-0x8(%ebp)
+f012f9a8:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f9ab:	8b 40 08             	mov    0x8(%eax),%eax
+f012f9ae:	89 45 f8             	mov    %eax,-0x8(%ebp)
 	struct BlockMetaData *prevBlock =currBlock->prev_next_info.le_prev;
-f012f98c:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012f98f:	8b 40 0c             	mov    0xc(%eax),%eax
-f012f992:	89 45 f4             	mov    %eax,-0xc(%ebp)
+f012f9b1:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f9b4:	8b 40 0c             	mov    0xc(%eax),%eax
+f012f9b7:	89 45 f4             	mov    %eax,-0xc(%ebp)
 	if(va==NULL){
-f012f995:	83 7d 08 00          	cmpl   $0x0,0x8(%ebp)
-f012f999:	0f 84 03 01 00 00    	je     f012faa2 <free_block+0x12e>
+f012f9ba:	83 7d 08 00          	cmpl   $0x0,0x8(%ebp)
+f012f9be:	0f 84 03 01 00 00    	je     f012fac7 <free_block+0x12e>
 		//cpritf("Enter a valid address");
 		return;
 	}
 	else if(is_free_block(va)){
-f012f99f:	ff 75 08             	pushl  0x8(%ebp)
-f012f9a2:	e8 0f fe ff ff       	call   f012f7b6 <is_free_block>
-f012f9a7:	83 c4 04             	add    $0x4,%esp
-f012f9aa:	84 c0                	test   %al,%al
-f012f9ac:	0f 85 f3 00 00 00    	jne    f012faa5 <free_block+0x131>
+f012f9c4:	ff 75 08             	pushl  0x8(%ebp)
+f012f9c7:	e8 ea fd ff ff       	call   f012f7b6 <is_free_block>
+f012f9cc:	83 c4 04             	add    $0x4,%esp
+f012f9cf:	84 c0                	test   %al,%al
+f012f9d1:	0f 85 f3 00 00 00    	jne    f012faca <free_block+0x131>
 		//cpritf("block is already free");
 		return;
 	}
 	else if (!is_free_block(va)&&!nextBlock->is_free&&!prevBlock->is_free){
-f012f9b2:	ff 75 08             	pushl  0x8(%ebp)
-f012f9b5:	e8 fc fd ff ff       	call   f012f7b6 <is_free_block>
-f012f9ba:	83 c4 04             	add    $0x4,%esp
-f012f9bd:	84 c0                	test   %al,%al
-f012f9bf:	75 20                	jne    f012f9e1 <free_block+0x6d>
-f012f9c1:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012f9c4:	8a 40 04             	mov    0x4(%eax),%al
-f012f9c7:	84 c0                	test   %al,%al
-f012f9c9:	75 16                	jne    f012f9e1 <free_block+0x6d>
-f012f9cb:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012f9ce:	8a 40 04             	mov    0x4(%eax),%al
-f012f9d1:	84 c0                	test   %al,%al
-f012f9d3:	75 0c                	jne    f012f9e1 <free_block+0x6d>
+f012f9d7:	ff 75 08             	pushl  0x8(%ebp)
+f012f9da:	e8 d7 fd ff ff       	call   f012f7b6 <is_free_block>
+f012f9df:	83 c4 04             	add    $0x4,%esp
+f012f9e2:	84 c0                	test   %al,%al
+f012f9e4:	75 20                	jne    f012fa06 <free_block+0x6d>
+f012f9e6:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012f9e9:	8a 40 04             	mov    0x4(%eax),%al
+f012f9ec:	84 c0                	test   %al,%al
+f012f9ee:	75 16                	jne    f012fa06 <free_block+0x6d>
+f012f9f0:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012f9f3:	8a 40 04             	mov    0x4(%eax),%al
+f012f9f6:	84 c0                	test   %al,%al
+f012f9f8:	75 0c                	jne    f012fa06 <free_block+0x6d>
 		currBlock->is_free=1;
-f012f9d5:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012f9d8:	c6 40 04 01          	movb   $0x1,0x4(%eax)
-f012f9dc:	e9 c5 00 00 00       	jmp    f012faa6 <free_block+0x132>
+f012f9fa:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012f9fd:	c6 40 04 01          	movb   $0x1,0x4(%eax)
+f012fa01:	e9 c5 00 00 00       	jmp    f012facb <free_block+0x132>
 	}
 	else if(prevBlock->is_free&&!nextBlock->is_free){
-f012f9e1:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012f9e4:	8a 40 04             	mov    0x4(%eax),%al
-f012f9e7:	84 c0                	test   %al,%al
-f012f9e9:	74 32                	je     f012fa1d <free_block+0xa9>
-f012f9eb:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012f9ee:	8a 40 04             	mov    0x4(%eax),%al
-f012f9f1:	84 c0                	test   %al,%al
-f012f9f3:	75 28                	jne    f012fa1d <free_block+0xa9>
+f012fa06:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fa09:	8a 40 04             	mov    0x4(%eax),%al
+f012fa0c:	84 c0                	test   %al,%al
+f012fa0e:	74 32                	je     f012fa42 <free_block+0xa9>
+f012fa10:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa13:	8a 40 04             	mov    0x4(%eax),%al
+f012fa16:	84 c0                	test   %al,%al
+f012fa18:	75 28                	jne    f012fa42 <free_block+0xa9>
 		prevBlock->size+=currBlock->size;
-f012f9f5:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012f9f8:	8b 10                	mov    (%eax),%edx
-f012f9fa:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012f9fd:	8b 00                	mov    (%eax),%eax
-f012f9ff:	01 c2                	add    %eax,%edx
-f012fa01:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012fa04:	89 10                	mov    %edx,(%eax)
+f012fa1a:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fa1d:	8b 10                	mov    (%eax),%edx
+f012fa1f:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012fa22:	8b 00                	mov    (%eax),%eax
+f012fa24:	01 c2                	add    %eax,%edx
+f012fa26:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fa29:	89 10                	mov    %edx,(%eax)
 		nextBlock->prev_next_info.le_prev=prevBlock;
-f012fa06:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa09:	8b 55 f4             	mov    -0xc(%ebp),%edx
-f012fa0c:	89 50 0c             	mov    %edx,0xc(%eax)
+f012fa2b:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa2e:	8b 55 f4             	mov    -0xc(%ebp),%edx
+f012fa31:	89 50 0c             	mov    %edx,0xc(%eax)
 		prevBlock->prev_next_info.le_next=nextBlock;
-f012fa0f:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012fa12:	8b 55 f8             	mov    -0x8(%ebp),%edx
-f012fa15:	89 50 08             	mov    %edx,0x8(%eax)
-f012fa18:	e9 89 00 00 00       	jmp    f012faa6 <free_block+0x132>
+f012fa34:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fa37:	8b 55 f8             	mov    -0x8(%ebp),%edx
+f012fa3a:	89 50 08             	mov    %edx,0x8(%eax)
+f012fa3d:	e9 89 00 00 00       	jmp    f012facb <free_block+0x132>
 
 	}
 	else if(!prevBlock->is_free&&nextBlock->is_free){
-f012fa1d:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012fa20:	8a 40 04             	mov    0x4(%eax),%al
-f012fa23:	84 c0                	test   %al,%al
-f012fa25:	75 35                	jne    f012fa5c <free_block+0xe8>
-f012fa27:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa2a:	8a 40 04             	mov    0x4(%eax),%al
-f012fa2d:	84 c0                	test   %al,%al
-f012fa2f:	74 2b                	je     f012fa5c <free_block+0xe8>
+f012fa42:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fa45:	8a 40 04             	mov    0x4(%eax),%al
+f012fa48:	84 c0                	test   %al,%al
+f012fa4a:	75 35                	jne    f012fa81 <free_block+0xe8>
+f012fa4c:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa4f:	8a 40 04             	mov    0x4(%eax),%al
+f012fa52:	84 c0                	test   %al,%al
+f012fa54:	74 2b                	je     f012fa81 <free_block+0xe8>
 		currBlock->size+=nextBlock->size;
-f012fa31:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012fa34:	8b 10                	mov    (%eax),%edx
-f012fa36:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa39:	8b 00                	mov    (%eax),%eax
-f012fa3b:	01 c2                	add    %eax,%edx
-f012fa3d:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012fa40:	89 10                	mov    %edx,(%eax)
+f012fa56:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012fa59:	8b 10                	mov    (%eax),%edx
+f012fa5b:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa5e:	8b 00                	mov    (%eax),%eax
+f012fa60:	01 c2                	add    %eax,%edx
+f012fa62:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012fa65:	89 10                	mov    %edx,(%eax)
 		nextBlock->prev_next_info.le_next->prev_next_info.le_prev=currBlock;
-f012fa42:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa45:	8b 40 08             	mov    0x8(%eax),%eax
-f012fa48:	8b 55 fc             	mov    -0x4(%ebp),%edx
-f012fa4b:	89 50 0c             	mov    %edx,0xc(%eax)
+f012fa67:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa6a:	8b 40 08             	mov    0x8(%eax),%eax
+f012fa6d:	8b 55 fc             	mov    -0x4(%ebp),%edx
+f012fa70:	89 50 0c             	mov    %edx,0xc(%eax)
 		currBlock->prev_next_info.le_next=nextBlock->prev_next_info.le_next;
-f012fa4e:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa51:	8b 50 08             	mov    0x8(%eax),%edx
-f012fa54:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012fa57:	89 50 08             	mov    %edx,0x8(%eax)
-f012fa5a:	eb 4a                	jmp    f012faa6 <free_block+0x132>
+f012fa73:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa76:	8b 50 08             	mov    0x8(%eax),%edx
+f012fa79:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012fa7c:	89 50 08             	mov    %edx,0x8(%eax)
+f012fa7f:	eb 4a                	jmp    f012facb <free_block+0x132>
 	}
 	else if(prevBlock->is_free&&nextBlock->is_free){
-f012fa5c:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012fa5f:	8a 40 04             	mov    0x4(%eax),%al
-f012fa62:	84 c0                	test   %al,%al
-f012fa64:	74 40                	je     f012faa6 <free_block+0x132>
-f012fa66:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa69:	8a 40 04             	mov    0x4(%eax),%al
-f012fa6c:	84 c0                	test   %al,%al
-f012fa6e:	74 36                	je     f012faa6 <free_block+0x132>
+f012fa81:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fa84:	8a 40 04             	mov    0x4(%eax),%al
+f012fa87:	84 c0                	test   %al,%al
+f012fa89:	74 40                	je     f012facb <free_block+0x132>
+f012fa8b:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa8e:	8a 40 04             	mov    0x4(%eax),%al
+f012fa91:	84 c0                	test   %al,%al
+f012fa93:	74 36                	je     f012facb <free_block+0x132>
 		prevBlock->size+=nextBlock->size+currBlock->size;
-f012fa70:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012fa73:	8b 10                	mov    (%eax),%edx
-f012fa75:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa78:	8b 08                	mov    (%eax),%ecx
-f012fa7a:	8b 45 fc             	mov    -0x4(%ebp),%eax
-f012fa7d:	8b 00                	mov    (%eax),%eax
-f012fa7f:	01 c8                	add    %ecx,%eax
-f012fa81:	01 c2                	add    %eax,%edx
-f012fa83:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012fa86:	89 10                	mov    %edx,(%eax)
+f012fa95:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fa98:	8b 10                	mov    (%eax),%edx
+f012fa9a:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fa9d:	8b 08                	mov    (%eax),%ecx
+f012fa9f:	8b 45 fc             	mov    -0x4(%ebp),%eax
+f012faa2:	8b 00                	mov    (%eax),%eax
+f012faa4:	01 c8                	add    %ecx,%eax
+f012faa6:	01 c2                	add    %eax,%edx
+f012faa8:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012faab:	89 10                	mov    %edx,(%eax)
 		nextBlock->prev_next_info.le_next->prev_next_info.le_prev=prevBlock;
-f012fa88:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa8b:	8b 40 08             	mov    0x8(%eax),%eax
-f012fa8e:	8b 55 f4             	mov    -0xc(%ebp),%edx
-f012fa91:	89 50 0c             	mov    %edx,0xc(%eax)
+f012faad:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fab0:	8b 40 08             	mov    0x8(%eax),%eax
+f012fab3:	8b 55 f4             	mov    -0xc(%ebp),%edx
+f012fab6:	89 50 0c             	mov    %edx,0xc(%eax)
 		prevBlock->prev_next_info.le_next=nextBlock->prev_next_info.le_next;
-f012fa94:	8b 45 f8             	mov    -0x8(%ebp),%eax
-f012fa97:	8b 50 08             	mov    0x8(%eax),%edx
-f012fa9a:	8b 45 f4             	mov    -0xc(%ebp),%eax
-f012fa9d:	89 50 08             	mov    %edx,0x8(%eax)
-f012faa0:	eb 04                	jmp    f012faa6 <free_block+0x132>
+f012fab9:	8b 45 f8             	mov    -0x8(%ebp),%eax
+f012fabc:	8b 50 08             	mov    0x8(%eax),%edx
+f012fabf:	8b 45 f4             	mov    -0xc(%ebp),%eax
+f012fac2:	89 50 08             	mov    %edx,0x8(%eax)
+f012fac5:	eb 04                	jmp    f012facb <free_block+0x132>
 	struct BlockMetaData *currBlock = ((struct BlockMetaData *)va - 1) ;
 	struct BlockMetaData *nextBlock= currBlock->prev_next_info.le_next;
 	struct BlockMetaData *prevBlock =currBlock->prev_next_info.le_prev;
 	if(va==NULL){
 		//cpritf("Enter a valid address");
 		return;
-f012faa2:	90                   	nop
-f012faa3:	eb 01                	jmp    f012faa6 <free_block+0x132>
+f012fac7:	90                   	nop
+f012fac8:	eb 01                	jmp    f012facb <free_block+0x132>
 	}
 	else if(is_free_block(va)){
 		//cpritf("block is already free");
 		return;
-f012faa5:	90                   	nop
-
+f012faca:	90                   	nop
 	//struct BlockMetaData *curBlkMetaData = ((struct BlockMetaData *)va - 1) ;
 
 
 
-}
-f012faa6:	c9                   	leave  
-f012faa7:	c3                   	ret    
 
-f012faa8 <realloc_block_FF>:
+}
+f012facb:	c9                   	leave  
+f012facc:	c3                   	ret    
+
+f012facd <realloc_block_FF>:
 
 //=========================================
 // [4] REALLOCATE BLOCK BY FIRST FIT:
 //=========================================
 void *realloc_block_FF(void* va, uint32 new_size)
 {
-f012faa8:	55                   	push   %ebp
-f012faa9:	89 e5                	mov    %esp,%ebp
-f012faab:	83 ec 08             	sub    $0x8,%esp
+f012facd:	55                   	push   %ebp
+f012face:	89 e5                	mov    %esp,%ebp
 	//TODO: [PROJECT'23.MS1 - #8] [3] DYNAMIC ALLOCATOR - realloc_block_FF()
-	panic("realloc_block_FF is not implemented yet");
-f012faae:	83 ec 04             	sub    $0x4,%esp
-f012fab1:	68 f0 b2 13 f0       	push   $0xf013b2f0
-f012fab6:	68 bd 00 00 00       	push   $0xbd
-f012fabb:	68 38 b2 13 f0       	push   $0xf013b238
-f012fac0:	e8 eb 06 fd ff       	call   f01001b0 <_panic>
-f012fac5:	66 90                	xchg   %ax,%ax
-f012fac7:	90                   	nop
+	//panic("realloc_block_FF is not implemented yet");
+	return NULL;
+f012fad0:	b8 00 00 00 00       	mov    $0x0,%eax
+}
+f012fad5:	5d                   	pop    %ebp
+f012fad6:	c3                   	ret    
+f012fad7:	90                   	nop
 
-f012fac8 <__udivdi3>:
-f012fac8:	55                   	push   %ebp
-f012fac9:	57                   	push   %edi
-f012faca:	56                   	push   %esi
-f012facb:	53                   	push   %ebx
-f012facc:	83 ec 1c             	sub    $0x1c,%esp
-f012facf:	8b 5c 24 30          	mov    0x30(%esp),%ebx
-f012fad3:	8b 4c 24 34          	mov    0x34(%esp),%ecx
-f012fad7:	8b 7c 24 38          	mov    0x38(%esp),%edi
-f012fadb:	89 5c 24 08          	mov    %ebx,0x8(%esp)
-f012fadf:	89 ca                	mov    %ecx,%edx
-f012fae1:	89 f8                	mov    %edi,%eax
-f012fae3:	8b 74 24 3c          	mov    0x3c(%esp),%esi
-f012fae7:	85 f6                	test   %esi,%esi
-f012fae9:	75 2d                	jne    f012fb18 <__udivdi3+0x50>
-f012faeb:	39 cf                	cmp    %ecx,%edi
-f012faed:	77 65                	ja     f012fb54 <__udivdi3+0x8c>
-f012faef:	89 fd                	mov    %edi,%ebp
-f012faf1:	85 ff                	test   %edi,%edi
-f012faf3:	75 0b                	jne    f012fb00 <__udivdi3+0x38>
-f012faf5:	b8 01 00 00 00       	mov    $0x1,%eax
-f012fafa:	31 d2                	xor    %edx,%edx
-f012fafc:	f7 f7                	div    %edi
-f012fafe:	89 c5                	mov    %eax,%ebp
-f012fb00:	31 d2                	xor    %edx,%edx
-f012fb02:	89 c8                	mov    %ecx,%eax
-f012fb04:	f7 f5                	div    %ebp
-f012fb06:	89 c1                	mov    %eax,%ecx
-f012fb08:	89 d8                	mov    %ebx,%eax
-f012fb0a:	f7 f5                	div    %ebp
-f012fb0c:	89 cf                	mov    %ecx,%edi
-f012fb0e:	89 fa                	mov    %edi,%edx
-f012fb10:	83 c4 1c             	add    $0x1c,%esp
-f012fb13:	5b                   	pop    %ebx
-f012fb14:	5e                   	pop    %esi
-f012fb15:	5f                   	pop    %edi
-f012fb16:	5d                   	pop    %ebp
-f012fb17:	c3                   	ret    
-f012fb18:	39 ce                	cmp    %ecx,%esi
-f012fb1a:	77 28                	ja     f012fb44 <__udivdi3+0x7c>
-f012fb1c:	0f bd fe             	bsr    %esi,%edi
-f012fb1f:	83 f7 1f             	xor    $0x1f,%edi
-f012fb22:	75 40                	jne    f012fb64 <__udivdi3+0x9c>
-f012fb24:	39 ce                	cmp    %ecx,%esi
-f012fb26:	72 0a                	jb     f012fb32 <__udivdi3+0x6a>
-f012fb28:	3b 44 24 08          	cmp    0x8(%esp),%eax
-f012fb2c:	0f 87 9e 00 00 00    	ja     f012fbd0 <__udivdi3+0x108>
-f012fb32:	b8 01 00 00 00       	mov    $0x1,%eax
-f012fb37:	89 fa                	mov    %edi,%edx
-f012fb39:	83 c4 1c             	add    $0x1c,%esp
-f012fb3c:	5b                   	pop    %ebx
-f012fb3d:	5e                   	pop    %esi
-f012fb3e:	5f                   	pop    %edi
-f012fb3f:	5d                   	pop    %ebp
-f012fb40:	c3                   	ret    
-f012fb41:	8d 76 00             	lea    0x0(%esi),%esi
-f012fb44:	31 ff                	xor    %edi,%edi
-f012fb46:	31 c0                	xor    %eax,%eax
-f012fb48:	89 fa                	mov    %edi,%edx
-f012fb4a:	83 c4 1c             	add    $0x1c,%esp
-f012fb4d:	5b                   	pop    %ebx
-f012fb4e:	5e                   	pop    %esi
-f012fb4f:	5f                   	pop    %edi
-f012fb50:	5d                   	pop    %ebp
-f012fb51:	c3                   	ret    
-f012fb52:	66 90                	xchg   %ax,%ax
-f012fb54:	89 d8                	mov    %ebx,%eax
-f012fb56:	f7 f7                	div    %edi
-f012fb58:	31 ff                	xor    %edi,%edi
-f012fb5a:	89 fa                	mov    %edi,%edx
-f012fb5c:	83 c4 1c             	add    $0x1c,%esp
-f012fb5f:	5b                   	pop    %ebx
-f012fb60:	5e                   	pop    %esi
-f012fb61:	5f                   	pop    %edi
-f012fb62:	5d                   	pop    %ebp
-f012fb63:	c3                   	ret    
-f012fb64:	bd 20 00 00 00       	mov    $0x20,%ebp
-f012fb69:	89 eb                	mov    %ebp,%ebx
-f012fb6b:	29 fb                	sub    %edi,%ebx
-f012fb6d:	89 f9                	mov    %edi,%ecx
-f012fb6f:	d3 e6                	shl    %cl,%esi
-f012fb71:	89 c5                	mov    %eax,%ebp
-f012fb73:	88 d9                	mov    %bl,%cl
-f012fb75:	d3 ed                	shr    %cl,%ebp
-f012fb77:	89 e9                	mov    %ebp,%ecx
-f012fb79:	09 f1                	or     %esi,%ecx
-f012fb7b:	89 4c 24 0c          	mov    %ecx,0xc(%esp)
-f012fb7f:	89 f9                	mov    %edi,%ecx
-f012fb81:	d3 e0                	shl    %cl,%eax
-f012fb83:	89 c5                	mov    %eax,%ebp
-f012fb85:	89 d6                	mov    %edx,%esi
-f012fb87:	88 d9                	mov    %bl,%cl
-f012fb89:	d3 ee                	shr    %cl,%esi
-f012fb8b:	89 f9                	mov    %edi,%ecx
-f012fb8d:	d3 e2                	shl    %cl,%edx
-f012fb8f:	8b 44 24 08          	mov    0x8(%esp),%eax
-f012fb93:	88 d9                	mov    %bl,%cl
-f012fb95:	d3 e8                	shr    %cl,%eax
-f012fb97:	09 c2                	or     %eax,%edx
-f012fb99:	89 d0                	mov    %edx,%eax
-f012fb9b:	89 f2                	mov    %esi,%edx
-f012fb9d:	f7 74 24 0c          	divl   0xc(%esp)
-f012fba1:	89 d6                	mov    %edx,%esi
-f012fba3:	89 c3                	mov    %eax,%ebx
-f012fba5:	f7 e5                	mul    %ebp
-f012fba7:	39 d6                	cmp    %edx,%esi
-f012fba9:	72 19                	jb     f012fbc4 <__udivdi3+0xfc>
-f012fbab:	74 0b                	je     f012fbb8 <__udivdi3+0xf0>
-f012fbad:	89 d8                	mov    %ebx,%eax
-f012fbaf:	31 ff                	xor    %edi,%edi
-f012fbb1:	e9 58 ff ff ff       	jmp    f012fb0e <__udivdi3+0x46>
-f012fbb6:	66 90                	xchg   %ax,%ax
-f012fbb8:	8b 54 24 08          	mov    0x8(%esp),%edx
-f012fbbc:	89 f9                	mov    %edi,%ecx
-f012fbbe:	d3 e2                	shl    %cl,%edx
-f012fbc0:	39 c2                	cmp    %eax,%edx
-f012fbc2:	73 e9                	jae    f012fbad <__udivdi3+0xe5>
-f012fbc4:	8d 43 ff             	lea    -0x1(%ebx),%eax
-f012fbc7:	31 ff                	xor    %edi,%edi
-f012fbc9:	e9 40 ff ff ff       	jmp    f012fb0e <__udivdi3+0x46>
-f012fbce:	66 90                	xchg   %ax,%ax
-f012fbd0:	31 c0                	xor    %eax,%eax
-f012fbd2:	e9 37 ff ff ff       	jmp    f012fb0e <__udivdi3+0x46>
-f012fbd7:	90                   	nop
+f012fad8 <__udivdi3>:
+f012fad8:	55                   	push   %ebp
+f012fad9:	57                   	push   %edi
+f012fada:	56                   	push   %esi
+f012fadb:	53                   	push   %ebx
+f012fadc:	83 ec 1c             	sub    $0x1c,%esp
+f012fadf:	8b 5c 24 30          	mov    0x30(%esp),%ebx
+f012fae3:	8b 4c 24 34          	mov    0x34(%esp),%ecx
+f012fae7:	8b 7c 24 38          	mov    0x38(%esp),%edi
+f012faeb:	89 5c 24 08          	mov    %ebx,0x8(%esp)
+f012faef:	89 ca                	mov    %ecx,%edx
+f012faf1:	89 f8                	mov    %edi,%eax
+f012faf3:	8b 74 24 3c          	mov    0x3c(%esp),%esi
+f012faf7:	85 f6                	test   %esi,%esi
+f012faf9:	75 2d                	jne    f012fb28 <__udivdi3+0x50>
+f012fafb:	39 cf                	cmp    %ecx,%edi
+f012fafd:	77 65                	ja     f012fb64 <__udivdi3+0x8c>
+f012faff:	89 fd                	mov    %edi,%ebp
+f012fb01:	85 ff                	test   %edi,%edi
+f012fb03:	75 0b                	jne    f012fb10 <__udivdi3+0x38>
+f012fb05:	b8 01 00 00 00       	mov    $0x1,%eax
+f012fb0a:	31 d2                	xor    %edx,%edx
+f012fb0c:	f7 f7                	div    %edi
+f012fb0e:	89 c5                	mov    %eax,%ebp
+f012fb10:	31 d2                	xor    %edx,%edx
+f012fb12:	89 c8                	mov    %ecx,%eax
+f012fb14:	f7 f5                	div    %ebp
+f012fb16:	89 c1                	mov    %eax,%ecx
+f012fb18:	89 d8                	mov    %ebx,%eax
+f012fb1a:	f7 f5                	div    %ebp
+f012fb1c:	89 cf                	mov    %ecx,%edi
+f012fb1e:	89 fa                	mov    %edi,%edx
+f012fb20:	83 c4 1c             	add    $0x1c,%esp
+f012fb23:	5b                   	pop    %ebx
+f012fb24:	5e                   	pop    %esi
+f012fb25:	5f                   	pop    %edi
+f012fb26:	5d                   	pop    %ebp
+f012fb27:	c3                   	ret    
+f012fb28:	39 ce                	cmp    %ecx,%esi
+f012fb2a:	77 28                	ja     f012fb54 <__udivdi3+0x7c>
+f012fb2c:	0f bd fe             	bsr    %esi,%edi
+f012fb2f:	83 f7 1f             	xor    $0x1f,%edi
+f012fb32:	75 40                	jne    f012fb74 <__udivdi3+0x9c>
+f012fb34:	39 ce                	cmp    %ecx,%esi
+f012fb36:	72 0a                	jb     f012fb42 <__udivdi3+0x6a>
+f012fb38:	3b 44 24 08          	cmp    0x8(%esp),%eax
+f012fb3c:	0f 87 9e 00 00 00    	ja     f012fbe0 <__udivdi3+0x108>
+f012fb42:	b8 01 00 00 00       	mov    $0x1,%eax
+f012fb47:	89 fa                	mov    %edi,%edx
+f012fb49:	83 c4 1c             	add    $0x1c,%esp
+f012fb4c:	5b                   	pop    %ebx
+f012fb4d:	5e                   	pop    %esi
+f012fb4e:	5f                   	pop    %edi
+f012fb4f:	5d                   	pop    %ebp
+f012fb50:	c3                   	ret    
+f012fb51:	8d 76 00             	lea    0x0(%esi),%esi
+f012fb54:	31 ff                	xor    %edi,%edi
+f012fb56:	31 c0                	xor    %eax,%eax
+f012fb58:	89 fa                	mov    %edi,%edx
+f012fb5a:	83 c4 1c             	add    $0x1c,%esp
+f012fb5d:	5b                   	pop    %ebx
+f012fb5e:	5e                   	pop    %esi
+f012fb5f:	5f                   	pop    %edi
+f012fb60:	5d                   	pop    %ebp
+f012fb61:	c3                   	ret    
+f012fb62:	66 90                	xchg   %ax,%ax
+f012fb64:	89 d8                	mov    %ebx,%eax
+f012fb66:	f7 f7                	div    %edi
+f012fb68:	31 ff                	xor    %edi,%edi
+f012fb6a:	89 fa                	mov    %edi,%edx
+f012fb6c:	83 c4 1c             	add    $0x1c,%esp
+f012fb6f:	5b                   	pop    %ebx
+f012fb70:	5e                   	pop    %esi
+f012fb71:	5f                   	pop    %edi
+f012fb72:	5d                   	pop    %ebp
+f012fb73:	c3                   	ret    
+f012fb74:	bd 20 00 00 00       	mov    $0x20,%ebp
+f012fb79:	89 eb                	mov    %ebp,%ebx
+f012fb7b:	29 fb                	sub    %edi,%ebx
+f012fb7d:	89 f9                	mov    %edi,%ecx
+f012fb7f:	d3 e6                	shl    %cl,%esi
+f012fb81:	89 c5                	mov    %eax,%ebp
+f012fb83:	88 d9                	mov    %bl,%cl
+f012fb85:	d3 ed                	shr    %cl,%ebp
+f012fb87:	89 e9                	mov    %ebp,%ecx
+f012fb89:	09 f1                	or     %esi,%ecx
+f012fb8b:	89 4c 24 0c          	mov    %ecx,0xc(%esp)
+f012fb8f:	89 f9                	mov    %edi,%ecx
+f012fb91:	d3 e0                	shl    %cl,%eax
+f012fb93:	89 c5                	mov    %eax,%ebp
+f012fb95:	89 d6                	mov    %edx,%esi
+f012fb97:	88 d9                	mov    %bl,%cl
+f012fb99:	d3 ee                	shr    %cl,%esi
+f012fb9b:	89 f9                	mov    %edi,%ecx
+f012fb9d:	d3 e2                	shl    %cl,%edx
+f012fb9f:	8b 44 24 08          	mov    0x8(%esp),%eax
+f012fba3:	88 d9                	mov    %bl,%cl
+f012fba5:	d3 e8                	shr    %cl,%eax
+f012fba7:	09 c2                	or     %eax,%edx
+f012fba9:	89 d0                	mov    %edx,%eax
+f012fbab:	89 f2                	mov    %esi,%edx
+f012fbad:	f7 74 24 0c          	divl   0xc(%esp)
+f012fbb1:	89 d6                	mov    %edx,%esi
+f012fbb3:	89 c3                	mov    %eax,%ebx
+f012fbb5:	f7 e5                	mul    %ebp
+f012fbb7:	39 d6                	cmp    %edx,%esi
+f012fbb9:	72 19                	jb     f012fbd4 <__udivdi3+0xfc>
+f012fbbb:	74 0b                	je     f012fbc8 <__udivdi3+0xf0>
+f012fbbd:	89 d8                	mov    %ebx,%eax
+f012fbbf:	31 ff                	xor    %edi,%edi
+f012fbc1:	e9 58 ff ff ff       	jmp    f012fb1e <__udivdi3+0x46>
+f012fbc6:	66 90                	xchg   %ax,%ax
+f012fbc8:	8b 54 24 08          	mov    0x8(%esp),%edx
+f012fbcc:	89 f9                	mov    %edi,%ecx
+f012fbce:	d3 e2                	shl    %cl,%edx
+f012fbd0:	39 c2                	cmp    %eax,%edx
+f012fbd2:	73 e9                	jae    f012fbbd <__udivdi3+0xe5>
+f012fbd4:	8d 43 ff             	lea    -0x1(%ebx),%eax
+f012fbd7:	31 ff                	xor    %edi,%edi
+f012fbd9:	e9 40 ff ff ff       	jmp    f012fb1e <__udivdi3+0x46>
+f012fbde:	66 90                	xchg   %ax,%ax
+f012fbe0:	31 c0                	xor    %eax,%eax
+f012fbe2:	e9 37 ff ff ff       	jmp    f012fb1e <__udivdi3+0x46>
+f012fbe7:	90                   	nop
 
-f012fbd8 <__umoddi3>:
-f012fbd8:	55                   	push   %ebp
-f012fbd9:	57                   	push   %edi
-f012fbda:	56                   	push   %esi
-f012fbdb:	53                   	push   %ebx
-f012fbdc:	83 ec 1c             	sub    $0x1c,%esp
-f012fbdf:	8b 4c 24 30          	mov    0x30(%esp),%ecx
-f012fbe3:	8b 74 24 34          	mov    0x34(%esp),%esi
-f012fbe7:	8b 7c 24 38          	mov    0x38(%esp),%edi
-f012fbeb:	8b 44 24 3c          	mov    0x3c(%esp),%eax
-f012fbef:	89 44 24 0c          	mov    %eax,0xc(%esp)
-f012fbf3:	89 4c 24 08          	mov    %ecx,0x8(%esp)
-f012fbf7:	89 f3                	mov    %esi,%ebx
-f012fbf9:	89 fa                	mov    %edi,%edx
-f012fbfb:	89 4c 24 04          	mov    %ecx,0x4(%esp)
-f012fbff:	89 34 24             	mov    %esi,(%esp)
-f012fc02:	85 c0                	test   %eax,%eax
-f012fc04:	75 1a                	jne    f012fc20 <__umoddi3+0x48>
-f012fc06:	39 f7                	cmp    %esi,%edi
-f012fc08:	0f 86 a2 00 00 00    	jbe    f012fcb0 <__umoddi3+0xd8>
-f012fc0e:	89 c8                	mov    %ecx,%eax
-f012fc10:	89 f2                	mov    %esi,%edx
-f012fc12:	f7 f7                	div    %edi
-f012fc14:	89 d0                	mov    %edx,%eax
-f012fc16:	31 d2                	xor    %edx,%edx
-f012fc18:	83 c4 1c             	add    $0x1c,%esp
-f012fc1b:	5b                   	pop    %ebx
-f012fc1c:	5e                   	pop    %esi
-f012fc1d:	5f                   	pop    %edi
-f012fc1e:	5d                   	pop    %ebp
-f012fc1f:	c3                   	ret    
-f012fc20:	39 f0                	cmp    %esi,%eax
-f012fc22:	0f 87 ac 00 00 00    	ja     f012fcd4 <__umoddi3+0xfc>
-f012fc28:	0f bd e8             	bsr    %eax,%ebp
-f012fc2b:	83 f5 1f             	xor    $0x1f,%ebp
-f012fc2e:	0f 84 ac 00 00 00    	je     f012fce0 <__umoddi3+0x108>
-f012fc34:	bf 20 00 00 00       	mov    $0x20,%edi
-f012fc39:	29 ef                	sub    %ebp,%edi
-f012fc3b:	89 fe                	mov    %edi,%esi
-f012fc3d:	89 7c 24 0c          	mov    %edi,0xc(%esp)
-f012fc41:	89 e9                	mov    %ebp,%ecx
-f012fc43:	d3 e0                	shl    %cl,%eax
-f012fc45:	89 d7                	mov    %edx,%edi
-f012fc47:	89 f1                	mov    %esi,%ecx
-f012fc49:	d3 ef                	shr    %cl,%edi
-f012fc4b:	09 c7                	or     %eax,%edi
-f012fc4d:	89 e9                	mov    %ebp,%ecx
-f012fc4f:	d3 e2                	shl    %cl,%edx
-f012fc51:	89 14 24             	mov    %edx,(%esp)
-f012fc54:	89 d8                	mov    %ebx,%eax
-f012fc56:	d3 e0                	shl    %cl,%eax
-f012fc58:	89 c2                	mov    %eax,%edx
-f012fc5a:	8b 44 24 08          	mov    0x8(%esp),%eax
-f012fc5e:	d3 e0                	shl    %cl,%eax
-f012fc60:	89 44 24 04          	mov    %eax,0x4(%esp)
-f012fc64:	8b 44 24 08          	mov    0x8(%esp),%eax
-f012fc68:	89 f1                	mov    %esi,%ecx
-f012fc6a:	d3 e8                	shr    %cl,%eax
-f012fc6c:	09 d0                	or     %edx,%eax
-f012fc6e:	d3 eb                	shr    %cl,%ebx
-f012fc70:	89 da                	mov    %ebx,%edx
-f012fc72:	f7 f7                	div    %edi
-f012fc74:	89 d3                	mov    %edx,%ebx
-f012fc76:	f7 24 24             	mull   (%esp)
-f012fc79:	89 c6                	mov    %eax,%esi
-f012fc7b:	89 d1                	mov    %edx,%ecx
-f012fc7d:	39 d3                	cmp    %edx,%ebx
-f012fc7f:	0f 82 87 00 00 00    	jb     f012fd0c <__umoddi3+0x134>
-f012fc85:	0f 84 91 00 00 00    	je     f012fd1c <__umoddi3+0x144>
-f012fc8b:	8b 54 24 04          	mov    0x4(%esp),%edx
-f012fc8f:	29 f2                	sub    %esi,%edx
-f012fc91:	19 cb                	sbb    %ecx,%ebx
-f012fc93:	89 d8                	mov    %ebx,%eax
-f012fc95:	8a 4c 24 0c          	mov    0xc(%esp),%cl
-f012fc99:	d3 e0                	shl    %cl,%eax
-f012fc9b:	89 e9                	mov    %ebp,%ecx
-f012fc9d:	d3 ea                	shr    %cl,%edx
-f012fc9f:	09 d0                	or     %edx,%eax
-f012fca1:	89 e9                	mov    %ebp,%ecx
-f012fca3:	d3 eb                	shr    %cl,%ebx
-f012fca5:	89 da                	mov    %ebx,%edx
-f012fca7:	83 c4 1c             	add    $0x1c,%esp
-f012fcaa:	5b                   	pop    %ebx
-f012fcab:	5e                   	pop    %esi
-f012fcac:	5f                   	pop    %edi
-f012fcad:	5d                   	pop    %ebp
-f012fcae:	c3                   	ret    
-f012fcaf:	90                   	nop
-f012fcb0:	89 fd                	mov    %edi,%ebp
-f012fcb2:	85 ff                	test   %edi,%edi
-f012fcb4:	75 0b                	jne    f012fcc1 <__umoddi3+0xe9>
-f012fcb6:	b8 01 00 00 00       	mov    $0x1,%eax
-f012fcbb:	31 d2                	xor    %edx,%edx
-f012fcbd:	f7 f7                	div    %edi
-f012fcbf:	89 c5                	mov    %eax,%ebp
-f012fcc1:	89 f0                	mov    %esi,%eax
-f012fcc3:	31 d2                	xor    %edx,%edx
-f012fcc5:	f7 f5                	div    %ebp
-f012fcc7:	89 c8                	mov    %ecx,%eax
-f012fcc9:	f7 f5                	div    %ebp
-f012fccb:	89 d0                	mov    %edx,%eax
-f012fccd:	e9 44 ff ff ff       	jmp    f012fc16 <__umoddi3+0x3e>
-f012fcd2:	66 90                	xchg   %ax,%ax
-f012fcd4:	89 c8                	mov    %ecx,%eax
-f012fcd6:	89 f2                	mov    %esi,%edx
-f012fcd8:	83 c4 1c             	add    $0x1c,%esp
-f012fcdb:	5b                   	pop    %ebx
-f012fcdc:	5e                   	pop    %esi
-f012fcdd:	5f                   	pop    %edi
-f012fcde:	5d                   	pop    %ebp
-f012fcdf:	c3                   	ret    
-f012fce0:	3b 04 24             	cmp    (%esp),%eax
-f012fce3:	72 06                	jb     f012fceb <__umoddi3+0x113>
-f012fce5:	3b 7c 24 04          	cmp    0x4(%esp),%edi
-f012fce9:	77 0f                	ja     f012fcfa <__umoddi3+0x122>
-f012fceb:	89 f2                	mov    %esi,%edx
-f012fced:	29 f9                	sub    %edi,%ecx
-f012fcef:	1b 54 24 0c          	sbb    0xc(%esp),%edx
-f012fcf3:	89 14 24             	mov    %edx,(%esp)
-f012fcf6:	89 4c 24 04          	mov    %ecx,0x4(%esp)
-f012fcfa:	8b 44 24 04          	mov    0x4(%esp),%eax
-f012fcfe:	8b 14 24             	mov    (%esp),%edx
-f012fd01:	83 c4 1c             	add    $0x1c,%esp
-f012fd04:	5b                   	pop    %ebx
-f012fd05:	5e                   	pop    %esi
-f012fd06:	5f                   	pop    %edi
-f012fd07:	5d                   	pop    %ebp
-f012fd08:	c3                   	ret    
-f012fd09:	8d 76 00             	lea    0x0(%esi),%esi
-f012fd0c:	2b 04 24             	sub    (%esp),%eax
-f012fd0f:	19 fa                	sbb    %edi,%edx
-f012fd11:	89 d1                	mov    %edx,%ecx
-f012fd13:	89 c6                	mov    %eax,%esi
-f012fd15:	e9 71 ff ff ff       	jmp    f012fc8b <__umoddi3+0xb3>
-f012fd1a:	66 90                	xchg   %ax,%ax
-f012fd1c:	39 44 24 04          	cmp    %eax,0x4(%esp)
-f012fd20:	72 ea                	jb     f012fd0c <__umoddi3+0x134>
-f012fd22:	89 d9                	mov    %ebx,%ecx
-f012fd24:	e9 62 ff ff ff       	jmp    f012fc8b <__umoddi3+0xb3>
+f012fbe8 <__umoddi3>:
+f012fbe8:	55                   	push   %ebp
+f012fbe9:	57                   	push   %edi
+f012fbea:	56                   	push   %esi
+f012fbeb:	53                   	push   %ebx
+f012fbec:	83 ec 1c             	sub    $0x1c,%esp
+f012fbef:	8b 4c 24 30          	mov    0x30(%esp),%ecx
+f012fbf3:	8b 74 24 34          	mov    0x34(%esp),%esi
+f012fbf7:	8b 7c 24 38          	mov    0x38(%esp),%edi
+f012fbfb:	8b 44 24 3c          	mov    0x3c(%esp),%eax
+f012fbff:	89 44 24 0c          	mov    %eax,0xc(%esp)
+f012fc03:	89 4c 24 08          	mov    %ecx,0x8(%esp)
+f012fc07:	89 f3                	mov    %esi,%ebx
+f012fc09:	89 fa                	mov    %edi,%edx
+f012fc0b:	89 4c 24 04          	mov    %ecx,0x4(%esp)
+f012fc0f:	89 34 24             	mov    %esi,(%esp)
+f012fc12:	85 c0                	test   %eax,%eax
+f012fc14:	75 1a                	jne    f012fc30 <__umoddi3+0x48>
+f012fc16:	39 f7                	cmp    %esi,%edi
+f012fc18:	0f 86 a2 00 00 00    	jbe    f012fcc0 <__umoddi3+0xd8>
+f012fc1e:	89 c8                	mov    %ecx,%eax
+f012fc20:	89 f2                	mov    %esi,%edx
+f012fc22:	f7 f7                	div    %edi
+f012fc24:	89 d0                	mov    %edx,%eax
+f012fc26:	31 d2                	xor    %edx,%edx
+f012fc28:	83 c4 1c             	add    $0x1c,%esp
+f012fc2b:	5b                   	pop    %ebx
+f012fc2c:	5e                   	pop    %esi
+f012fc2d:	5f                   	pop    %edi
+f012fc2e:	5d                   	pop    %ebp
+f012fc2f:	c3                   	ret    
+f012fc30:	39 f0                	cmp    %esi,%eax
+f012fc32:	0f 87 ac 00 00 00    	ja     f012fce4 <__umoddi3+0xfc>
+f012fc38:	0f bd e8             	bsr    %eax,%ebp
+f012fc3b:	83 f5 1f             	xor    $0x1f,%ebp
+f012fc3e:	0f 84 ac 00 00 00    	je     f012fcf0 <__umoddi3+0x108>
+f012fc44:	bf 20 00 00 00       	mov    $0x20,%edi
+f012fc49:	29 ef                	sub    %ebp,%edi
+f012fc4b:	89 fe                	mov    %edi,%esi
+f012fc4d:	89 7c 24 0c          	mov    %edi,0xc(%esp)
+f012fc51:	89 e9                	mov    %ebp,%ecx
+f012fc53:	d3 e0                	shl    %cl,%eax
+f012fc55:	89 d7                	mov    %edx,%edi
+f012fc57:	89 f1                	mov    %esi,%ecx
+f012fc59:	d3 ef                	shr    %cl,%edi
+f012fc5b:	09 c7                	or     %eax,%edi
+f012fc5d:	89 e9                	mov    %ebp,%ecx
+f012fc5f:	d3 e2                	shl    %cl,%edx
+f012fc61:	89 14 24             	mov    %edx,(%esp)
+f012fc64:	89 d8                	mov    %ebx,%eax
+f012fc66:	d3 e0                	shl    %cl,%eax
+f012fc68:	89 c2                	mov    %eax,%edx
+f012fc6a:	8b 44 24 08          	mov    0x8(%esp),%eax
+f012fc6e:	d3 e0                	shl    %cl,%eax
+f012fc70:	89 44 24 04          	mov    %eax,0x4(%esp)
+f012fc74:	8b 44 24 08          	mov    0x8(%esp),%eax
+f012fc78:	89 f1                	mov    %esi,%ecx
+f012fc7a:	d3 e8                	shr    %cl,%eax
+f012fc7c:	09 d0                	or     %edx,%eax
+f012fc7e:	d3 eb                	shr    %cl,%ebx
+f012fc80:	89 da                	mov    %ebx,%edx
+f012fc82:	f7 f7                	div    %edi
+f012fc84:	89 d3                	mov    %edx,%ebx
+f012fc86:	f7 24 24             	mull   (%esp)
+f012fc89:	89 c6                	mov    %eax,%esi
+f012fc8b:	89 d1                	mov    %edx,%ecx
+f012fc8d:	39 d3                	cmp    %edx,%ebx
+f012fc8f:	0f 82 87 00 00 00    	jb     f012fd1c <__umoddi3+0x134>
+f012fc95:	0f 84 91 00 00 00    	je     f012fd2c <__umoddi3+0x144>
+f012fc9b:	8b 54 24 04          	mov    0x4(%esp),%edx
+f012fc9f:	29 f2                	sub    %esi,%edx
+f012fca1:	19 cb                	sbb    %ecx,%ebx
+f012fca3:	89 d8                	mov    %ebx,%eax
+f012fca5:	8a 4c 24 0c          	mov    0xc(%esp),%cl
+f012fca9:	d3 e0                	shl    %cl,%eax
+f012fcab:	89 e9                	mov    %ebp,%ecx
+f012fcad:	d3 ea                	shr    %cl,%edx
+f012fcaf:	09 d0                	or     %edx,%eax
+f012fcb1:	89 e9                	mov    %ebp,%ecx
+f012fcb3:	d3 eb                	shr    %cl,%ebx
+f012fcb5:	89 da                	mov    %ebx,%edx
+f012fcb7:	83 c4 1c             	add    $0x1c,%esp
+f012fcba:	5b                   	pop    %ebx
+f012fcbb:	5e                   	pop    %esi
+f012fcbc:	5f                   	pop    %edi
+f012fcbd:	5d                   	pop    %ebp
+f012fcbe:	c3                   	ret    
+f012fcbf:	90                   	nop
+f012fcc0:	89 fd                	mov    %edi,%ebp
+f012fcc2:	85 ff                	test   %edi,%edi
+f012fcc4:	75 0b                	jne    f012fcd1 <__umoddi3+0xe9>
+f012fcc6:	b8 01 00 00 00       	mov    $0x1,%eax
+f012fccb:	31 d2                	xor    %edx,%edx
+f012fccd:	f7 f7                	div    %edi
+f012fccf:	89 c5                	mov    %eax,%ebp
+f012fcd1:	89 f0                	mov    %esi,%eax
+f012fcd3:	31 d2                	xor    %edx,%edx
+f012fcd5:	f7 f5                	div    %ebp
+f012fcd7:	89 c8                	mov    %ecx,%eax
+f012fcd9:	f7 f5                	div    %ebp
+f012fcdb:	89 d0                	mov    %edx,%eax
+f012fcdd:	e9 44 ff ff ff       	jmp    f012fc26 <__umoddi3+0x3e>
+f012fce2:	66 90                	xchg   %ax,%ax
+f012fce4:	89 c8                	mov    %ecx,%eax
+f012fce6:	89 f2                	mov    %esi,%edx
+f012fce8:	83 c4 1c             	add    $0x1c,%esp
+f012fceb:	5b                   	pop    %ebx
+f012fcec:	5e                   	pop    %esi
+f012fced:	5f                   	pop    %edi
+f012fcee:	5d                   	pop    %ebp
+f012fcef:	c3                   	ret    
+f012fcf0:	3b 04 24             	cmp    (%esp),%eax
+f012fcf3:	72 06                	jb     f012fcfb <__umoddi3+0x113>
+f012fcf5:	3b 7c 24 04          	cmp    0x4(%esp),%edi
+f012fcf9:	77 0f                	ja     f012fd0a <__umoddi3+0x122>
+f012fcfb:	89 f2                	mov    %esi,%edx
+f012fcfd:	29 f9                	sub    %edi,%ecx
+f012fcff:	1b 54 24 0c          	sbb    0xc(%esp),%edx
+f012fd03:	89 14 24             	mov    %edx,(%esp)
+f012fd06:	89 4c 24 04          	mov    %ecx,0x4(%esp)
+f012fd0a:	8b 44 24 04          	mov    0x4(%esp),%eax
+f012fd0e:	8b 14 24             	mov    (%esp),%edx
+f012fd11:	83 c4 1c             	add    $0x1c,%esp
+f012fd14:	5b                   	pop    %ebx
+f012fd15:	5e                   	pop    %esi
+f012fd16:	5f                   	pop    %edi
+f012fd17:	5d                   	pop    %ebp
+f012fd18:	c3                   	ret    
+f012fd19:	8d 76 00             	lea    0x0(%esi),%esi
+f012fd1c:	2b 04 24             	sub    (%esp),%eax
+f012fd1f:	19 fa                	sbb    %edi,%edx
+f012fd21:	89 d1                	mov    %edx,%ecx
+f012fd23:	89 c6                	mov    %eax,%esi
+f012fd25:	e9 71 ff ff ff       	jmp    f012fc9b <__umoddi3+0xb3>
+f012fd2a:	66 90                	xchg   %ax,%ax
+f012fd2c:	39 44 24 04          	cmp    %eax,0x4(%esp)
+f012fd30:	72 ea                	jb     f012fd1c <__umoddi3+0x134>
+f012fd32:	89 d9                	mov    %ebx,%ecx
+f012fd34:	e9 62 ff ff ff       	jmp    f012fc9b <__umoddi3+0xb3>
