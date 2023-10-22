@@ -74,6 +74,7 @@ void print_blocks_list(struct MemBlock_LIST list)
 	cprintf("=========================================\n");
 
 }
+struct MemBlock_LIST Heap_MetaBlock;
 //
 ////********************************************************************************//
 ////********************************************************************************//
@@ -85,7 +86,7 @@ void print_blocks_list(struct MemBlock_LIST list)
 //==================================
 // [1] INITIALIZE DYNAMIC ALLOCATOR:
 //==================================
-void initialize_dynamic_allocator(uint32 daStart, uint32 initSizeOfAllocatedSpace)
+void initialize_dynamic_allocator(uint32 daStart , uint32 initSizeOfAllocatedSpace)
 {
 	//=========================================
 	//DON'T CHANGE THESE LINES=================
@@ -95,7 +96,15 @@ void initialize_dynamic_allocator(uint32 daStart, uint32 initSizeOfAllocatedSpac
 	//=========================================
 
 	//TODO: [PROJECT'23.MS1 - #5] [3] DYNAMIC ALLOCATOR - initialize_dynamic_allocator()
-	panic("initialize_dynamic_allocator is not implemented yet");
+	//panic("initialize_dynamic_allocator is not implemented yet");
+	struct BlockMetaData* firstMeta=(struct BlockMetaData*)daStart;;
+	Heap_MetaBlock.lh_first = firstMeta;
+	firstMeta->prev_next_info.le_next = NULL;
+	firstMeta->prev_next_info.le_prev = NULL;
+	firstMeta->is_free = 1;
+	firstMeta->size = initSizeOfAllocatedSpace-sizeOfMetaData();
+
+
 }
 
 //=========================================
@@ -141,19 +150,7 @@ void *alloc_block_NF(uint32 size)
 void free_block(void *va)
 {
 	//TODO: [PROJECT'23.MS1 - #7] [3] DYNAMIC ALLOCATOR - free_block()
-	//panic("free_block is not implemented yet");
-	if(va==NULL){
-		cpritf("Enter a valid address");
-		return;
-	}
-	else if(is_free_block(va)){
-		cpritf("block is already free");
-		return;
-	}
-
-	//struct BlockMetaData *curBlkMetaData = ((struct BlockMetaData *)va - 1) ;
-
-
+	panic("free_block is not implemented yet");
 }
 
 //=========================================
@@ -162,6 +159,6 @@ void free_block(void *va)
 void *realloc_block_FF(void* va, uint32 new_size)
 {
 	//TODO: [PROJECT'23.MS1 - #8] [3] DYNAMIC ALLOCATOR - realloc_block_FF()
-	panic("realloc_block_FF is not implemented yet");
+	//panic("realloc_block_FF is not implemented yet");
 	return NULL;
 }
