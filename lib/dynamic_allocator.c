@@ -113,7 +113,41 @@ void initialize_dynamic_allocator(uint32 daStart , uint32 initSizeOfAllocatedSpa
 void *alloc_block_FF(uint32 size)
 {
 	//TODO: [PROJECT'23.MS1 - #6] [3] DYNAMIC ALLOCATOR - alloc_block_FF()
-	panic("alloc_block_FF is not implemented yet");
+	//panic("alloc_block_FF is not implemented yet");
+	Heap_MetaBlock.___ptr_next=Heap_MetaBlock.lh_first;
+	while(1)
+	{
+		uint32 avlbl_size =  Heap_MetaBlock.___ptr_next->size;
+		uint8 is_space_free = Heap_MetaBlock.___ptr_next->is_free;
+		if(is_space_free)
+		{
+			if(avlbl_size>=size)
+			{
+				 Heap_MetaBlock.___ptr_next->size = size;
+				 struct BlockMetaData* newMeta =  Heap_MetaBlock.___ptr_next + size;
+				 newMeta->is_free=1;
+				 newMeta->size = avlbl_size-size;
+				 newMeta->prev_next_info.le_next= Heap_MetaBlock.___ptr_next->prev_next_info.le_next;
+				 Heap_MetaBlock.___ptr_next->prev_next_info.le_next = newMeta;
+				 newMeta->prev_next_info.le_prev=  Heap_MetaBlock.___ptr_next;
+				 return  Heap_MetaBlock.___ptr_next;
+			}
+			else
+			{
+				Heap_MetaBlock.___ptr_next++;
+			}
+		}
+		else if(!is_space_free)
+		{
+			Heap_MetaBlock.___ptr_next++;
+		}
+		if(Heap_MetaBlock.___ptr_next==NULL)
+		{
+		  sbrk(5);
+
+		}
+	}
+
 	return NULL;
 }
 //=========================================
