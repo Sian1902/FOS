@@ -102,7 +102,7 @@ void initialize_dynamic_allocator(uint32 daStart , uint32 initSizeOfAllocatedSpa
 	firstMeta->prev_next_info.le_next = NULL;
 	firstMeta->prev_next_info.le_prev = NULL;
 	firstMeta->is_free = 1;
-	firstMeta->size = initSizeOfAllocatedSpace-sizeOfMetaData();
+	firstMeta->size = initSizeOfAllocatedSpace;
 
 
 }
