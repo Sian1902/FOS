@@ -333,23 +333,28 @@ void sys_allocate_chunk(uint32 virtual_address, uint32 size, uint32 perms)
 
 
 /*2023*/
-//TODO: [PROJECT'23.MS1 - #3] [2] SYSTEM CALLS - Implement these system calls
+//TODO: [PROJECT'23.MS1 - #3] [2] SYSTEM CALLS - Implement these system calls ~~{DONE}
 void* sys_sbrk(int increment)
 {
-	//Comment the following line before start coding...
-	panic("not implemented yet");
+	// 23oct-10pm , Hamed , calling syscall-commented panic line
+	syscall(SYS_sbrk, increment, 0, 0, 0, 0);
+	//panic("not implemented yet");
 	return NULL;
 }
 
 void sys_free_user_mem(uint32 virtual_address, uint32 size)
 {
-	//Comment the following line before start coding...
-	panic("not implemented yet");
+	// 23oct-10pm , Hamed , calling syscall-commented panic line-added return
+	syscall(SYS_free_user_mem, virtual_address, size, 0, 0, 0);
+	//panic("not implemented yet");
+	return ;
 }
 
 void sys_allocate_user_mem(uint32 virtual_address, uint32 size)
 {
-	//Comment the following line before start coding...
-	panic("not implemented yet");
+	// 23oct-10pm , Hamed , calling syscall-commented panic line-added return
+	syscall(SYS_allocate_user_mem, virtual_address, size, 0, 0, 0);
+	//panic("not implemented yet");
+	return ;
 }
 

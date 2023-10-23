@@ -521,7 +521,20 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 	{
 	/*2023*/
 	//TODO: [PROJECT'23.MS1 - #4] [2] SYSTEM CALLS - Add suitable code here
-
+	// 23oct-10pm , Hamed , ~start~
+	case SYS_sbrk:
+		sys_sbrk(a1);
+		return 0;
+		break;
+	case SYS_free_user_mem:
+		sys_free_user_mem(a1,a2);
+		return 0;
+		break;
+	case SYS_allocate_user_mem:
+		sys_allocate_user_mem(a1,a2);
+		return 0;
+		break;
+	// 23oct-10pm , Hamed , ~end~
 	//=====================================================================
 	case SYS_cputs:
 		sys_cputs((const char*)a1,a2,(uint8)a3);
