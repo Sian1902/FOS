@@ -87,8 +87,8 @@ int command_sch_MLFQ(int number_of_arguments, char **arguments);
 int command_sch_BSD(int number_of_arguments, char **arguments);
 int command_print_sch_method(int number_of_arguments, char **arguments);
 int command_sch_test(int number_of_arguments, char **arguments);
-
 //2023
 int command_tst(int number_of_arguments, char **arguments);
+int command_str2lower(int number_of_arguments,char **arguments);
 
 #endif /* KERN_CMD_COMMANDS_H_ */

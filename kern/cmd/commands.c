@@ -70,6 +70,7 @@ struct Command commands[] =
 		//******************************//
 		{ "wm", "writes one byte to specific physical location" ,command_writemem_k, 2},
 		{ "schedBSD", "switch the scheduler to BSD with given # queues & quantum", command_sch_BSD, 2},
+		{"str2lower","turn string to lower case",command_str2lower,2},
 
 		//********************************//
 		/* COMMANDS WITH THREE ARGUMENTS */
@@ -107,7 +108,11 @@ int command_help(int number_of_arguments, char **arguments)
 		cprintf("run %s - %s [User Program]\n", ptr_UserPrograms[i].name, ptr_UserPrograms[i].desc);
 	return 0;
 }
-
+int command_str2lower(int number_of_arguments,char **arguments){
+	char*s=str2lower(arguments[1],arguments[2]);
+	cprintf("%s\n",s);
+return 0;
+}
 //print information about kernel addresses and kernel size
 int command_kernel_info(int number_of_arguments, char **arguments )
 {
