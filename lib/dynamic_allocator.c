@@ -169,17 +169,21 @@ void free_block(void *va)
 		prevBlock->size+=currBlock->size;
 		nextBlock->prev_next_info.le_prev=prevBlock;
 		prevBlock->prev_next_info.le_next=nextBlock;
+		currBlock->size=0;
 
 	}
 	else if(!prevBlock->is_free&&nextBlock->is_free){
 		currBlock->size+=nextBlock->size;
 		nextBlock->prev_next_info.le_next->prev_next_info.le_prev=currBlock;
 		currBlock->prev_next_info.le_next=nextBlock->prev_next_info.le_next;
+		nextBlock->size=0;
 	}
 	else if(prevBlock->is_free&&nextBlock->is_free){
 		prevBlock->size+=nextBlock->size+currBlock->size;
 		nextBlock->prev_next_info.le_next->prev_next_info.le_prev=prevBlock;
 		prevBlock->prev_next_info.le_next=nextBlock->prev_next_info.le_next;
+		currBlock->size=0;
+		nextBlock->size=0;
 		}
 
 
@@ -197,5 +201,15 @@ void *realloc_block_FF(void* va, uint32 new_size)
 {
 	//TODO: [PROJECT'23.MS1 - #8] [3] DYNAMIC ALLOCATOR - realloc_block_FF()
 	//panic("realloc_block_FF is not implemented yet");
-	return NULL;
+	//return NULL;
+	struct BlockMetaData *currBlock = ((struct BlockMetaData *)va - 1) ;
+	struct BlockMetaData *nextBlock= currBlock->prev_next_info.le_next;
+	int inc=new_size- currBlock->size;
+	if(inc<=nextBlock->size){
+		currBlock->size+=inc;
+		nextBlock->size-=inc;
+		return va;
+	}
+
+
 }
