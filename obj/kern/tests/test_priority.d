@@ -5,7 +5,7 @@ obj/kern/tests/test_priority.o: kern/tests/test_priority.c \
  kern/proc/user_programs.h kern/cmd/command_prompt.h inc/string.h \
  inc/x86.h inc/disk.h inc/error.h kern/disk/pagefile_manager.h \
  kern/tests/../mem/memory_manager.h inc/uheap.h \
- /FOS_CODES/FOS/kern/tests/utilities.h inc/timerreg.h kern/cpu/kclock.h \
+ kern/tests/../mem/../tests/utilities.h inc/timerreg.h kern/cpu/kclock.h \
  kern/tests/../mem/boot_memory_manager.h \
  kern/tests/../mem/paging_helpers.h \
  kern/tests/../mem/working_set_manager.h \

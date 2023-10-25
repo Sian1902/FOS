@@ -7,7 +7,7 @@ obj/kern/tests/tst_handler.o: kern/tests/tst_handler.c \
  kern/proc/priority_manager.h kern/tests/../cpu/sched.h \
  kern/cpu/sched_helpers.h kern/tests/../disk/pagefile_manager.h \
  kern/tests/../mem/kheap.h kern/tests/../mem/memory_manager.h inc/uheap.h \
- /FOS_CODES/FOS/kern/tests/utilities.h inc/timerreg.h kern/cpu/kclock.h \
+ kern/tests/../mem/../tests/utilities.h inc/timerreg.h kern/cpu/kclock.h \
  kern/tests/../mem/boot_memory_manager.h \
  kern/tests/../mem/paging_helpers.h \
  kern/tests/../mem/working_set_manager.h \
