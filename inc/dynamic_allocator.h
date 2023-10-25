@@ -28,6 +28,7 @@ struct BlockMetaData
 };
 
 struct MemBlock_LIST Heap_MetaBlock;
+struct MemBlock_LIST memBlocks;
 
 #define sizeOfMetaData() (sizeof(struct BlockMetaData))
 
