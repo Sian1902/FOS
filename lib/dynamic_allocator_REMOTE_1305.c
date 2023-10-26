@@ -194,7 +194,6 @@ if (va == NULL){
 
 		//freeing the block
 		currBlock->is_free=1;
-
 		//next is free
 		if(nextBlock!=NULL&&nextBlock->is_free){
 			currBlock->size+=nextBlock->size;
@@ -206,7 +205,6 @@ if (va == NULL){
 			prevBlock->size+=currBlock->size;
 			currBlock->size=0;
 			currBlock->is_free=0;
-
 		}
 
 
@@ -218,7 +216,6 @@ if (va == NULL){
 void *realloc_block_FF(void* va, uint32 new_size) {
 	//TODO: [PROJECT'23.MS1 - #8] [3] DYNAMIC ALLOCATOR - realloc_block_FF()
 	//panic("realloc_block_FF is not implemented yet");
-
 	if(va==NULL&&new_size!=0){
 		return alloc_block_FF(new_size);
 	}
@@ -268,6 +265,5 @@ void *realloc_block_FF(void* va, uint32 new_size) {
 		return (struct BlockMetaData *)((uint32)currBlock+sizeOfMetaData());
 	}
 	return NULL;
-
 
 }
