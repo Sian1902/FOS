@@ -104,49 +104,48 @@ void initialize_dynamic_allocator(uint32 daStart,
 // [4] ALLOCATE BLOCK BY FIRST FIT:
 //=========================================
 
-
-
 void *alloc_block_FF(uint32 size) {
 	//TODO: [PROJECT'23.MS1 - #6] [3] DYNAMIC ALLOCATOR - alloc_block_FF()
 	//panic("alloc_block_FF is not implemented yet");
-	if(size==0){
-			return NULL;
+	if (size == 0) {
+		return NULL;
+	}
+	struct BlockMetaData* iterator, *temp;
+	uint32 sizeToAllocate = size + sizeOfMetaData();
+	LIST_FOREACH(iterator,&Heap_MetaBlock)
+	{
+		if (!iterator->is_free) {
+			continue;
+		} else if (iterator->size < sizeToAllocate) {
+			continue;
 		}
-		struct BlockMetaData* iterator,*temp;
-		uint32 sizeToAllocate=size+sizeOfMetaData();
-		LIST_FOREACH(iterator,&Heap_MetaBlock){
-			if(!iterator->is_free){
-						continue;
-			}
-			else if(iterator->size<sizeToAllocate){
-						continue;
-			}
-			if(iterator->is_free&&iterator->size>=sizeToAllocate){
-				if(iterator->size-sizeToAllocate<sizeOfMetaData()){
-					iterator->is_free=0;
-					return (struct BlockMetaData*)((uint32)iterator+sizeOfMetaData());
-				}
-				else{
-					temp=iterator;
-					iterator=(struct BlockMetaData *) ((uint32) iterator+ sizeToAllocate);
-					iterator->size = temp->size - (size + sizeOfMetaData());
-					iterator->is_free=1;
-					LIST_INSERT_AFTER(&Heap_MetaBlock,temp,iterator);
-					temp->is_free=0;
-					temp->size=sizeToAllocate;
-					return (struct BlockMetaData *) ((uint32) temp+ sizeOfMetaData());
-				}
+		if (iterator->is_free && iterator->size >= sizeToAllocate) {
+			if (iterator->size - sizeToAllocate < sizeOfMetaData()) {
+				iterator->is_free = 0;
+				return (struct BlockMetaData*) ((uint32) iterator
+						+ sizeOfMetaData());
+			} else {
+				temp = iterator;
+				iterator = (struct BlockMetaData *) ((uint32) iterator
+						+ sizeToAllocate);
+				iterator->size = temp->size - (size + sizeOfMetaData());
+				iterator->is_free = 1;
+				LIST_INSERT_AFTER(&Heap_MetaBlock, temp, iterator);
+				temp->is_free = 0;
+				temp->size = sizeToAllocate;
+				return (struct BlockMetaData *) ((uint32) temp
+						+ sizeOfMetaData());
 			}
 		}
-		if (sbrk(sizeToAllocate) == (void*) -1) {
-						return NULL;
-					}
-			struct BlockMetaData* extendingBlock;
-			extendingBlock=(struct BlockMetaData*)((uint32)Heap_MetaBlock.lh_last);
-			extendingBlock->is_free=0;
-			extendingBlock->size=sizeToAllocate;
-			return (struct BlockMetaData*)((uint32)extendingBlock+sizeOfMetaData());
-
+	}
+	if (sbrk(sizeToAllocate) == (void*) -1) {
+		return NULL;
+	}
+	struct BlockMetaData* extendingBlock;
+	extendingBlock = (struct BlockMetaData*) ((uint32) Heap_MetaBlock.lh_last);
+	extendingBlock->is_free = 0;
+	extendingBlock->size = sizeToAllocate;
+	return (struct BlockMetaData*) ((uint32) extendingBlock + sizeOfMetaData());
 
 }
 
@@ -156,7 +155,64 @@ void *alloc_block_FF(uint32 size) {
 void *alloc_block_BF(uint32 size) {
 	//TODO: [PROJECT'23.MS1 - BONUS] [3] DYNAMIC ALLOCATOR - alloc_block_BF()
 	//panic("alloc_block_BF is not implemented yet");
-	return NULL;
+	if (size == 0) {
+		return NULL;
+	}
+	struct BlockMetaData* iterator, *temp, *allocate=NULL;
+	uint32 diff = -1;
+	uint32 sizeToAllocate = size + sizeOfMetaData();
+	LIST_FOREACH(iterator,&Heap_MetaBlock)
+	{
+
+		if (!iterator->is_free)
+		{
+			continue;
+		} else if (iterator->size < sizeToAllocate)
+		{
+			continue;
+		}
+		if(allocate==NULL)
+		 {
+			allocate=iterator;
+		 }
+		uint32 newdiff = iterator->size - sizeToAllocate;
+		if (diff > newdiff)
+		{
+			diff = newdiff;
+			allocate = iterator;
+		}
+	}
+	if(allocate!=NULL)
+	{
+		if (allocate->size - sizeToAllocate < sizeOfMetaData()) {
+
+				allocate->is_free = 0;
+				allocate->size = sizeToAllocate;
+				return (struct BlockMetaData*) ((uint32) allocate + sizeOfMetaData());
+			} else {
+				temp = allocate;
+				allocate = (struct BlockMetaData *) ((uint32) allocate
+						+ sizeToAllocate);
+				allocate->size = temp->size - (size + sizeOfMetaData());
+				allocate->is_free = 1;
+				LIST_INSERT_AFTER(&Heap_MetaBlock, temp, allocate);
+				temp->is_free = 0;
+				temp->size = sizeToAllocate;
+				return (struct BlockMetaData *) ((uint32) temp + sizeOfMetaData());
+			}
+	}
+	else{
+	if (sbrk(sizeToAllocate) == (void*) -1) {
+		return NULL;
+	}
+	struct BlockMetaData* extendingBlock;
+	extendingBlock = (struct BlockMetaData*) ((uint32) Heap_MetaBlock.lh_last);
+	extendingBlock->is_free = 0;
+	extendingBlock->size = sizeToAllocate;
+	return (struct BlockMetaData*) ((uint32) extendingBlock + sizeOfMetaData());
+	}
+
+
 }
 
 //=========================================
@@ -181,34 +237,33 @@ void *alloc_block_NF(uint32 size) {
 void free_block(void *va) {
 	//TODO: [PROJECT'23.MS1 - #7] [3] DYNAMIC ALLOCATOR - free_block()
 	//	panic("free_block is not implemented yet");
-if (va == NULL){
-	return ;
-}
+	if (va == NULL) {
+		return;
+	}
 	struct BlockMetaData *currBlock = ((struct BlockMetaData *) va - 1);
-	struct BlockMetaData *nextBlock= currBlock->prev_next_info.le_next;
-	struct BlockMetaData *prevBlock= currBlock->prev_next_info.le_prev;
+	struct BlockMetaData *nextBlock = currBlock->prev_next_info.le_next;
+	struct BlockMetaData *prevBlock = currBlock->prev_next_info.le_prev;
 	//address is null or block is already free
-	if(currBlock->is_free||currBlock==NULL){
+	if (currBlock->is_free || currBlock == NULL) {
 		return;
 	}
 
-		//freeing the block
-		currBlock->is_free=1;
+	//freeing the block
+	currBlock->is_free = 1;
 
-		//next is free
-		if(nextBlock!=NULL&&nextBlock->is_free){
-			currBlock->size+=nextBlock->size;
-			nextBlock->is_free=0;
-			nextBlock->size=0;
-		}
-		//prev is free or prev and next are free
-		if(prevBlock!=NULL&&prevBlock->is_free){
-			prevBlock->size+=currBlock->size;
-			currBlock->size=0;
-			currBlock->is_free=0;
+	//next is free
+	if (nextBlock != NULL && nextBlock->is_free) {
+		currBlock->size += nextBlock->size;
+		nextBlock->is_free = 0;
+		nextBlock->size = 0;
+	}
+	//prev is free or prev and next are free
+	if (prevBlock != NULL && prevBlock->is_free) {
+		prevBlock->size += currBlock->size;
+		currBlock->size = 0;
+		currBlock->is_free = 0;
 
-		}
-
+	}
 
 }
 
@@ -219,55 +274,53 @@ void *realloc_block_FF(void* va, uint32 new_size) {
 	//TODO: [PROJECT'23.MS1 - #8] [3] DYNAMIC ALLOCATOR - realloc_block_FF()
 	//panic("realloc_block_FF is not implemented yet");
 
-	if(va==NULL&&new_size!=0){
+	if (va == NULL && new_size != 0) {
 		return alloc_block_FF(new_size);
-	}
-	else if(va!=NULL&&new_size==0){
+	} else if (va != NULL && new_size == 0) {
 		free_block(va);
 		return NULL;
-	}
-	else if(va==NULL&&new_size==0){
+	} else if (va == NULL && new_size == 0) {
 		return NULL;
 	}
-	uint32 sizeToAllocate=new_size+sizeOfMetaData();
+	uint32 sizeToAllocate = new_size + sizeOfMetaData();
 	struct BlockMetaData *currBlock = ((struct BlockMetaData *) va - 1);
-	struct BlockMetaData *nextBlock=currBlock->prev_next_info.le_next;
-	if(sizeToAllocate<currBlock->size){
-		struct BlockMetaData *temp=currBlock;
-		currBlock=(struct BlockMetaData *)((uint32)temp+sizeToAllocate);
-		currBlock->size=temp->size-sizeToAllocate;
-		currBlock->is_free=1;
-		temp->size=sizeToAllocate;
-		LIST_INSERT_AFTER(&Heap_MetaBlock,temp,currBlock);
-		return (struct BlockMetaData *)((uint32)temp+sizeOfMetaData());
-	}
-	else if(sizeToAllocate>currBlock->size){
-		if(nextBlock->is_free&&nextBlock!=NULL){
-			if(nextBlock->size==sizeToAllocate-currBlock->size){
-				currBlock->size=sizeToAllocate;
-				nextBlock->is_free=0;
-				nextBlock->size=0;
+	struct BlockMetaData *nextBlock = currBlock->prev_next_info.le_next;
+	if (sizeToAllocate < currBlock->size) {
+		struct BlockMetaData *temp = currBlock;
+		currBlock = (struct BlockMetaData *) ((uint32) temp + sizeToAllocate);
+		currBlock->size = temp->size - sizeToAllocate;
+		currBlock->is_free = 1;
+		temp->size = sizeToAllocate;
+		LIST_INSERT_AFTER(&Heap_MetaBlock, temp, currBlock);
+		return (struct BlockMetaData *) ((uint32) temp + sizeOfMetaData());
+	} else if (sizeToAllocate > currBlock->size) {
+		if (nextBlock->is_free && nextBlock != NULL) {
+			if (nextBlock->size == sizeToAllocate - currBlock->size) {
+				currBlock->size = sizeToAllocate;
+				nextBlock->is_free = 0;
+				nextBlock->size = 0;
+			} else if (nextBlock->size - sizeOfMetaData()
+					> sizeToAllocate - currBlock->size) {
+				struct BlockMetaData *temp = nextBlock;
+				nextBlock = (struct BlockMetaData *) ((uint32) temp
+						+ sizeToAllocate);
+				nextBlock->size = temp->size - sizeToAllocate - currBlock->size;
+				temp->size = 0;
+				temp->is_free = 0;
+				currBlock->size = sizeToAllocate;
 			}
-			else if (nextBlock->size-sizeOfMetaData()>sizeToAllocate-currBlock->size){
-				struct BlockMetaData *temp=nextBlock;
-				nextBlock=(struct BlockMetaData *)((uint32)temp+sizeToAllocate);
-				nextBlock->size=temp->size-sizeToAllocate-currBlock->size;
-				temp->size=0;
-				temp->is_free=0;
-				currBlock->size=sizeToAllocate;
-			}
-			return (struct BlockMetaData *)((uint32)currBlock+sizeOfMetaData());
-		}
-		else if(nextBlock==NULL||nextBlock->size<sizeToAllocate-currBlock->size||!nextBlock->is_free){
+			return (struct BlockMetaData *) ((uint32) currBlock
+					+ sizeOfMetaData());
+		} else if (nextBlock == NULL
+				|| nextBlock->size < sizeToAllocate - currBlock->size
+				|| !nextBlock->is_free) {
 			free_block(currBlock);
 			return alloc_block_FF(new_size);
 
 		}
-	}
-	else if(sizeToAllocate==currBlock->size){
-		return (struct BlockMetaData *)((uint32)currBlock+sizeOfMetaData());
+	} else if (sizeToAllocate == currBlock->size) {
+		return (struct BlockMetaData *) ((uint32) currBlock + sizeOfMetaData());
 	}
 	return NULL;
-
 
 }
