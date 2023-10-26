@@ -155,7 +155,7 @@ void *alloc_block_FF(uint32 size) {
 //=========================================
 void *alloc_block_BF(uint32 size) {
 	//TODO: [PROJECT'23.MS1 - BONUS] [3] DYNAMIC ALLOCATOR - alloc_block_BF()
-	panic("alloc_block_BF is not implemented yet");
+	//panic("alloc_block_BF is not implemented yet");
 	return NULL;
 }
 
@@ -216,5 +216,54 @@ if (va == NULL){
 void *realloc_block_FF(void* va, uint32 new_size) {
 	//TODO: [PROJECT'23.MS1 - #8] [3] DYNAMIC ALLOCATOR - realloc_block_FF()
 	//panic("realloc_block_FF is not implemented yet");
+	if(va==NULL&&new_size!=0){
+		return alloc_block_FF(new_size);
+	}
+	else if(va!=NULL&&new_size==0){
+		free_block(va);
+		return NULL;
+	}
+	else if(va==NULL&&new_size==0){
+		return NULL;
+	}
+	uint32 sizeToAllocate=new_size+sizeOfMetaData();
+	struct BlockMetaData *currBlock = ((struct BlockMetaData *) va - 1);
+	struct BlockMetaData *nextBlock=currBlock->prev_next_info.le_next;
+	if(sizeToAllocate<currBlock->size){
+		struct BlockMetaData *temp=currBlock;
+		currBlock=(struct BlockMetaData *)((uint32)temp+sizeToAllocate);
+		currBlock->size=temp->size-sizeToAllocate;
+		currBlock->is_free=1;
+		temp->size=sizeToAllocate;
+		LIST_INSERT_AFTER(&Heap_MetaBlock,temp,currBlock);
+		return (struct BlockMetaData *)((uint32)temp+sizeOfMetaData());
+	}
+	else if(sizeToAllocate>currBlock->size){
+		if(nextBlock->is_free&&nextBlock!=NULL){
+			if(nextBlock->size==sizeToAllocate-currBlock->size){
+				currBlock->size=sizeToAllocate;
+				nextBlock->is_free=0;
+				nextBlock->size=0;
+			}
+			else if (nextBlock->size-sizeOfMetaData()>sizeToAllocate-currBlock->size){
+				struct BlockMetaData *temp=nextBlock;
+				nextBlock=(struct BlockMetaData *)((uint32)temp+sizeToAllocate);
+				nextBlock->size=temp->size-sizeToAllocate-currBlock->size;
+				temp->size=0;
+				temp->is_free=0;
+				currBlock->size=sizeToAllocate;
+			}
+			return (struct BlockMetaData *)((uint32)currBlock+sizeOfMetaData());
+		}
+		else if(nextBlock==NULL||nextBlock->size<sizeToAllocate-currBlock->size||!nextBlock->is_free){
+			free_block(currBlock);
+			return alloc_block_FF(new_size);
+
+		}
+	}
+	else if(sizeToAllocate==currBlock->size){
+		return (struct BlockMetaData *)((uint32)currBlock+sizeOfMetaData());
+	}
 	return NULL;
+
 }
