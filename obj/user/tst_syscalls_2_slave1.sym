@@ -1,7 +1,7 @@
 00200010 R __STAB_BEGIN__
-00204150 R __STAB_END__
-00204151 R __STABSTR_BEGIN__
-00206fd7 R __STABSTR_END__
+002041b0 R __STAB_END__
+002041b1 R __STABSTR_BEGIN__
+00207481 R __STABSTR_END__
 00800020 T _start
 00800031 t args_exist
 00800038 T _main
@@ -93,10 +93,10 @@
 00801863 T sys_check_WS_list
 00801883 T sys_allocate_chunk
 008018a0 T sys_sbrk
-008018bd T sys_free_user_mem
-008018da T sys_allocate_user_mem
-008018f8 T __udivdi3
-00801a08 T __umoddi3
+008018bb T sys_free_user_mem
+008018d7 T sys_allocate_user_mem
+008018f4 T __udivdi3
+00801a04 T __umoddi3
 00801e80 r error_string
 00803000 D binaryname
 00803020 B myEnv
@@ -107,6 +107,7 @@
 00803114 B Heap_MetaBlock
 00803124 B _ModifiedBufferLength
 00803128 B argv0
+0080312c B memBlocks
 eec00000 A envs
 ef400000 A vpt
 ef7bd000 A vpd
