@@ -1165,7 +1165,28 @@ void test_free_block_NF()
 {
 	panic("not implemented");
 }
-
+//my functions
+//returns the address of the first freeblock
+void *findFreeBlockff(){
+ struct BlockMetaData* iterator;
+	LIST_FOREACH(iterator,&Heap_MetaBlock){
+		if(iterator->is_free){
+			 struct BlockMetaData* address=(struct BlockMetaData*)((uint32)iterator+sizeOfMetaData());
+			cprintf("found empty block at %x with size %x \n",address,iterator->size);
+			 return address;
+		}
+	}
+	cprintf("memory is full");
+	return NULL;
+}
+void listFreeBlocks(){
+	struct BlockMetaData* iterator;
+	LIST_FOREACH(iterator,&Heap_MetaBlock){
+		if(iterator->is_free){
+	cprintf("empty block at address %x with size %x \n",iterator,iterator->size);
+		}
+		}
+}
 void test_realloc_block_FF()
 {
 #if USE_KHEAP
@@ -1194,7 +1215,6 @@ void test_realloc_block_FF()
 	/* Try to allocate set of blocks with different sizes*/
 	cprintf("1: Test calling realloc with VA = NULL.[10%]\n\n") ;
 	is_correct = 1;
-
 	int totalSizes = 0;
 	for (int i = 0; i < numOfAllocs; ++i)
 	{
@@ -1280,6 +1300,7 @@ void test_realloc_block_FF()
 	/* Check stored data inside each allocated block*/
 	for (int i = 0; i < idx; ++i)
 	{
+
 		if (i % allocCntPerSize == 0)
 			continue;
 		if (*(startVAs[i]) != i || *(midVAs[i]) != i ||	*(endVAs[i]) != i)
@@ -1301,9 +1322,12 @@ void test_realloc_block_FF()
 	cprintf("	3.1: reallocate in same place (NO relocate - split)\n\n") ;
 	is_correct = 1;
 	{
+
+
 		blockIndex = 4*allocCntPerSize - 1 ;
 		new_size = allocSizes[3] /*12+16 B*/ + allocSizes[4]/2 /*2KB/2*/ - sizeOfMetaData();
 		va = realloc_block_FF(startVAs[blockIndex], new_size);
+
 
 		//check return address
 		if(va == NULL || (va != startVAs[blockIndex]))
@@ -1396,7 +1420,7 @@ void test_realloc_block_FF()
 		blockIndex = 0*allocCntPerSize + 1; /*4KB*/
 		old_size = allocSizes[0] /*4KB*/;
 		new_size = old_size - 1*kilo - sizeOfMetaData();
-		//cprintf("REALLOCATE to size %d\n",new_size ) ;
+		cprintf("REALLOCATE to size %d\n",new_size ) ;
 		va = realloc_block_FF(startVAs[blockIndex], new_size);
 
 		//check return address
@@ -1432,11 +1456,12 @@ void test_realloc_block_FF()
 			is_correct = 0;
 			cprintf("test_realloc_block_FF #14.5: WRONG REALLOC! content of the block is not correct. Expected %d\n", blockIndex);
 		}
+
 	}
 	if (is_correct)
-	{
-		eval += 30;
-	}
+		{
+			eval += 30;
+		}
 
 
 	cprintf("test realloc_block with FIRST FIT completed. Evaluation = %d%\n", eval);
@@ -1456,3 +1481,4 @@ void test_realloc_block_FF_COMPLETE()
 
 
 /********************Helper Functions***************************/
+

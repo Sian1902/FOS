@@ -21,6 +21,8 @@ void test_free_block_BF();
 void test_free_block_NF();
 void test_realloc_block_FF_COMPLETE();
 void test_realloc_block_FF();
-
+//my functions
+void *findFreeBlockff();
+void listFreeBlocks();
 
 #endif /* KERN_TESTS_TEST_DYNAMIC_ALLOCATOR_H_ */

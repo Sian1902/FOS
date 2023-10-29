@@ -515,6 +515,7 @@ void* sys_sbrk(int increment)
 // Dispatches to the correct kernel function, passing the arguments.
 uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uint32 a5)
 {
+
 	// Call the function corresponding to the 'syscallno' parameter.
 	// Return any appropriate return value.
 	switch(syscallno)
@@ -526,12 +527,36 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 	        //return 0;
 	        break;
 	    case SYS_free_user_mem:
+	    	if((uint32*)a1==NULL||(uint32*)a1==NULL){
+	    		sched_kill_env(curenv->env_id);
+	    	}
+	    	else if(a1>=USER_LIMIT||a2>=PAGE_SIZE){
+	    		    		sched_kill_env(curenv->env_id);
+	    		    	}
+	    	else if(a1<0||a2<0){
+	    		sched_kill_env(curenv->env_id);
+	    	}
+
+	    	else{
 	        sys_free_user_mem(a1,a2);
 	        return 0;
+	    	}
 	        break;
 	    case SYS_allocate_user_mem:
+	    	if((uint32*)a1==NULL||(uint32*)a1==NULL){
+	    		sched_kill_env(curenv->env_id);
+	    	}
+	    	else if(a1>=USER_LIMIT||a2>=USER_LIMIT-1024){
+	    		    		sched_kill_env(curenv->env_id);
+	    		    	}
+	    	else if(a1<=0||a2<=0){
+	    		sched_kill_env(curenv->env_id);
+	    	}
+
+	    	else{
 	        sys_allocate_user_mem(a1,a2);
 	        return 0;
+	    	}
 	        break;
 	//=====================================================================
 	case SYS_cputs:
