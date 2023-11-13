@@ -4,19 +4,45 @@
 #include <inc/dynamic_allocator.h>
 #include "memory_manager.h"
 
-
+uint32 kheap_start;
+uint32 kheap_segment_break;
+uint32 kheap_hard_limit;
 int initialize_kheap_dynamic_allocator(uint32 daStart, uint32 initSizeToAllocate, uint32 daLimit)
 {
 	//TODO: [PROJECT'23.MS2 - #01] [1] KERNEL HEAP - initialize_kheap_dynamic_allocator()
 	//Initialize the dynamic allocator of kernel heap with the given start address, size & limit
+	kheap_start = daStart;
+	kheap_segment_break =  (daStart + initSizeToAllocate);
+	kheap_hard_limit =  daLimit;
+	if(kheap_segment_break>kheap_hard_limit)
+	{
+		return E_NO_MEM;
+	}
 	//All pages in the given range should be allocated
+	uint32 iterator = kheap_start;
+	struct FrameInfo *ptr_frame_info;
+	while(iterator!=kheap_segment_break)
+	{
+		int ret = allocate_frame(&ptr_frame_info) ;
+		if(ret==0)
+		{
+			map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT);
+		}
+		else{
+			return E_NO_MEM;
+		}
+		iterator+=PAGE_SIZE;
+	}
+
 	//Remember: call the initialize_dynamic_allocator(..) to complete the initialization
+	initialize_dynamic_allocator(daStart,initSizeToAllocate);
+
 	//Return:
 	//	On success: 0
 	//	Otherwise (if no memory OR initial size exceed the given limit): E_NO_MEM
 
 	//Comment the following line(s) before start coding...
-	panic("not implemented yet");
+	//panic("not implemented yet");
 	return 0;
 }
 
