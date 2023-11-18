@@ -3,10 +3,10 @@
 #include <inc/memlayout.h>
 #include <inc/dynamic_allocator.h>
 #include "memory_manager.h"
+#define DYNAMIC_ALLOCATOR_DS 0 //ROUNDUP(NUM_OF_KHEAP_PAGES * sizeof(struct MemBlock), PAGE_SIZE)
+#define INITIAL_KHEAP_ALLOCATIONS (DYNAMIC_ALLOCATOR_DS + KERNEL_SHARES_ARR_INIT_SIZE + KERNEL_SEMAPHORES_ARR_INIT_SIZE)
+#define ACTUAL_START ((KERNEL_HEAP_START + DYN_ALLOC_MAX_SIZE + PAGE_SIZE) + INITIAL_KHEAP_ALLOCATIONS)
 
-uint32 kheap_start;
-uint32 kheap_segment_break;
-uint32 kheap_hard_limit;
 int initialize_kheap_dynamic_allocator(uint32 daStart, uint32 initSizeToAllocate, uint32 daLimit)
 {
 	//TODO: [PROJECT'23.MS2 - #01] [1] KERNEL HEAP - initialize_kheap_dynamic_allocator()
@@ -46,8 +46,10 @@ int initialize_kheap_dynamic_allocator(uint32 daStart, uint32 initSizeToAllocate
 	return 0;
 }
 
+
 void* sbrk(int increment)
 {
+
 	//TODO: [PROJECT'23.MS2 - #02] [1] KERNEL HEAP - sbrk()
 	/* increment > 0: move the segment break of the kernel to increase the size of its heap,
 	 * 				you should allocate pages and map them into the kernel virtual address space as necessary,
@@ -65,20 +67,130 @@ void* sbrk(int increment)
 	 */
 
 	//MS2: COMMENT THIS LINE BEFORE START CODING====
-	return (void*)-1 ;
-	panic("not implemented yet");
+/*	return (void*)-1 ;
+	panic("not implemented yet");*/
+	uint32 *lastBreak=(uint32*)kheap_segment_break;
+    cprintf("inc %d  brk %d  limit %d  inc+brk %d\n ",increment,kheap_segment_break,kheap_hard_limit,(kheap_segment_break+increment));
+	if(kheap_segment_break+increment>kheap_hard_limit ){
+
+			return (void*)-1 ;
+	}
+	if(increment==0){
+
+			return lastBreak;
+		}
+	else if(increment>0){
+
+		int inc=ROUNDUP(increment,PAGE_SIZE);
+		inc/=PAGE_SIZE;
+		kheap_segment_break=(uint32)((uint32)lastBreak+inc);
+		uint32 iterator=(uint32)lastBreak;
+
+		 for(int i=0;i<inc/PAGE_SIZE;i++){
+			 struct FrameInfo *ptr_frame_info;
+			 int ret=allocate_frame(&ptr_frame_info) ;
+			 if(ret==0){
+				 map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT);
+
+			 }
+			 else{
+				 panic("no space");
+
+			 }
+				iterator+=PAGE_SIZE;
+		 }
+
+		return lastBreak;
+	}
+	else{
+
+		int dec = ROUNDDOWN(increment,PAGE_SIZE);
+		dec/=PAGE_SIZE;
+		 for(int i=1;i<=dec/PAGE_SIZE;i++)
+		 {
+	      struct FrameInfo *frameToBeDeleted= to_frame_info(kheap_segment_break-(i*PAGE_SIZE));/*(struct FrameInfo *) (kheap_segment_break-(i*PAGE_SIZE));*/
+	      free_frame(frameToBeDeleted);
+	      unmap_frame(ptr_page_directory,kheap_segment_break-(i*PAGE_SIZE));
+		 }
+		 lastBreak= (uint32*)((uint32)lastBreak-dec);
+		 if(lastBreak>=(uint32*)kheap_start){
+			 kheap_segment_break=(uint32)lastBreak;
+
+			 return lastBreak;
+		 }
+		 else{
+			 panic("break lower than start");
+		 }
+	}
 }
 
+
+
+uint32 start=ACTUAL_START;
 
 void* kmalloc(unsigned int size)
 {
 	//TODO: [PROJECT'23.MS2 - #03] [1] KERNEL HEAP - kmalloc()
-	//refer to the project presentation and documentation for details
-	// use "isKHeapPlacementStrategyFIRSTFIT() ..." functions to check the current strategy
+		//refer to the project presentation and documentation for details
+		// use "isKHeapPlacementStrategyFIRSTFIT() ..." functions to check the current strategy
 
-	//change this "return" according to your answer
-	kpanic_into_prompt("kmalloc() is not implemented yet...!!");
-	return NULL;
+		//change this "return" according to your answer
+		//kpanic_into_prompt("kmalloc() is not implemented yet...!!");
+		//return NULL;
+		if(size<=DYN_ALLOC_MAX_BLOCK_SIZE){
+
+			if(isKHeapPlacementStrategyFIRSTFIT()){
+			cprintf("calling block allocator\n");
+			return alloc_block_FF(size);
+			}
+			if(isKHeapPlacementStrategyBESTFIT()){
+				return alloc_block_BF(size);
+			}
+		}
+		int pagesToAllocate= ROUNDUP(size,PAGE_SIZE);
+		pagesToAllocate/=PAGE_SIZE;
+		if(size>=KERNEL_HEAP_MAX - ACTUAL_START + 1)
+		{
+			return NULL;
+	    }
+
+		uint32 iterator = start;
+		uint32 accum=0;
+		uint32 *firstAddress;
+		bool first=0;
+	/* cprintf("it: %d",iterator);*/
+		while(iterator!=KERNEL_HEAP_MAX&&pagesToAllocate!=0){
+			 struct FrameInfo *ptr_frame_info;
+			 if(free_frame_list.size<pagesToAllocate){
+				 cprintf("insufficient size");
+				 return NULL;
+			 }
+
+			 int ret=allocate_frame(&ptr_frame_info) ;
+				 if(ptr_frame_info->references!=0){
+						 iterator+= PAGE_SIZE;
+						 continue;
+					 }
+
+			if(ret==0){
+				pagesToAllocate--;
+				map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT);
+
+				if(!first){
+					first=1;
+
+					 firstAddress=(uint32*)iterator;
+				}
+
+			}
+
+			iterator+=PAGE_SIZE;
+			accum+= PAGE_SIZE;
+		}
+
+	cprintf("actual:%d first: %d \n",ACTUAL_START,firstAddress);
+	start+=accum;
+		return firstAddress;
 }
 
 void kfree(void* virtual_address)
