@@ -75,24 +75,32 @@ void FOS_initialize()
 #if USE_KHEAP
 	//2022:
 	{
+
 		int freeFrames_before = sys_calculate_free_frames() ;
 		int freeDiskFrames_before = pf_calculate_free_frames() ;
+
 		initialize_kheap_dynamic_allocator(KERNEL_HEAP_START, PAGE_SIZE, KERNEL_HEAP_START + DYN_ALLOC_MAX_SIZE);
+
 		int freeFrames_after = sys_calculate_free_frames() ;
 		int freeDiskFrames_after = pf_calculate_free_frames() ;
 		test_initialize_dyn_block_system(freeFrames_before, freeDiskFrames_before, freeFrames_after, freeDiskFrames_after);
 	}
+
 	MAX_SHARES = (KERNEL_SHARES_ARR_INIT_SIZE) / sizeof(struct Share);
 	MAX_SEMAPHORES = (KERNEL_SEMAPHORES_ARR_INIT_SIZE) / sizeof(struct Semaphore);
 #endif
+
 	create_shares_array(MAX_SHARES);
+
 	create_semaphores_array(MAX_SEMAPHORES);
 
-
 	enableBuffering(0);
-	//enableModifiedBuffer(1) ;
+
+	enableModifiedBuffer(1) ;
 	enableModifiedBuffer(0) ;
+
 	setModifiedBufferLength(1000);
+
 
 	// Lab 4 multitasking initialization functions
 	pic_init();
@@ -136,6 +144,7 @@ void FOS_initialize()
 		cprintf("Type 'help' for a list of commands.\n");
 		run_command_prompt();
 	}
+	cprintf("finished fos initialize\n");
 }
 
 

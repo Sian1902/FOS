@@ -84,16 +84,20 @@ void initialize_dynamic_allocator(uint32 daStart,
 		uint32 initSizeOfAllocatedSpace) {
 	//=========================================
 	//DON'T CHANGE THESE LINES=================
+
 	if (initSizeOfAllocatedSpace == 0)
 		return;
 	is_initialized = 1;
 	//=========================================
 	//=========================================
 	struct BlockMetaData *firstMeta = (struct BlockMetaData *) daStart;
+
 	//Heap_MetaBlock.lh_first = firstMeta;
 	firstMeta->size = initSizeOfAllocatedSpace;
 	firstMeta->is_free = 1;
+
 	LIST_INSERT_HEAD(&Heap_MetaBlock, firstMeta);
+
 
 }
 
@@ -104,30 +108,41 @@ void initialize_dynamic_allocator(uint32 daStart,
 void *alloc_block_FF(uint32 size) {
 	//TODO: [PROJECT'23.MS1 - #6] [3] DYNAMIC ALLOCATOR - alloc_block_FF()
 	//panic("alloc_block_FF is not implemented yet");
+	cprintf("checkpoint 1 allocff\n");
 	if (size == 0) {
+		cprintf("checkpoint 2 allocff\n");
 		return NULL;
 	}
 	if (!is_initialized)
 	{
+		cprintf("checkpoint 3 allocff\n");
 	uint32 required_size = size + sizeOfMetaData();
 	uint32 da_start = (uint32)sbrk(required_size);
 	//get new break since it's page aligned! thus, the size can be more than the required one
+	cprintf("checkpoint 4 allocff\n");
 	uint32 da_break = (uint32)sbrk(0);
+	cprintf("checkpoint 5 allocff\n");
 	initialize_dynamic_allocator(da_start, da_break - da_start);
+	cprintf("checkpoint 6 allocff\n");
 	}
 
 	struct BlockMetaData* iterator, *temp;
+	cprintf("created block\n");
 	uint32 sizeToAllocate = size + sizeOfMetaData();
+	cprintf("init size to allocate\n");
 	LIST_FOREACH(iterator,&Heap_MetaBlock)
 	{
 		if (!iterator->is_free) {
+			cprintf("block isn't free\n");
 			continue;
 		} else if (iterator->size < sizeToAllocate) {
+			cprintf("size doesn't fit block\n");
 			continue;
 		}
 		if (iterator->is_free && iterator->size >= sizeToAllocate) {
 			if (iterator->size - sizeToAllocate < sizeOfMetaData()) {
 				iterator->is_free = 0;
+				cprintf("checkpoint 7 allocff\n");
 				return (struct BlockMetaData*) ((uint32) iterator
 						+ sizeOfMetaData());
 			} else {
@@ -139,19 +154,52 @@ void *alloc_block_FF(uint32 size) {
 				LIST_INSERT_AFTER(&Heap_MetaBlock, temp, iterator);
 				temp->is_free = 0;
 				temp->size = sizeToAllocate;
+				cprintf("checkpoint 8 allocff\n");
 				return (struct BlockMetaData *) ((uint32) temp
 						+ sizeOfMetaData());
 			}
 		}
 	}
+	cprintf("loop exit\n");
 	if (sbrk(sizeToAllocate) == (void*) -1) {
+		cprintf("checkpoint 9 allocff\n");
 		return NULL;
 	}
 	struct BlockMetaData* extendingBlock;
-	extendingBlock = (struct BlockMetaData*) ((uint32) Heap_MetaBlock.lh_last);
-	extendingBlock->is_free = 0;
-	extendingBlock->size = sizeToAllocate;
-	return (struct BlockMetaData*) ((uint32) extendingBlock + sizeOfMetaData());
+	cprintf("created extend block\n");
+	cprintf("last free %d\n",Heap_MetaBlock.lh_last->is_free);
+			extendingBlock = (struct BlockMetaData*) ((uint32) Heap_MetaBlock.lh_last);
+			cprintf("initialized extending block \n");
+			cprintf("prev extend block free %d\n",extendingBlock->prev_next_info.le_prev->is_free);
+			cprintf("extending block size %d\n",extendingBlock->size - sizeToAllocate);
+			if (extendingBlock->size - sizeToAllocate < sizeOfMetaData()) {
+				cprintf("no split\n");
+				extendingBlock->is_free = 0;
+				extendingBlock->size = sizeToAllocate;
+				cprintf("checkpoint 10 allocff\n");
+
+
+						}
+
+			else{
+				cprintf("split\n");
+				temp = extendingBlock;
+				cprintf("temp created\n");
+								extendingBlock = (struct BlockMetaData *) ((uint32) extendingBlock
+										+ sizeToAllocate);
+								cprintf("extend block moved\n");
+								cprintf("sbrk %d block address %d temp address %d size to allock %d temp size %d",sbrk(0),(struct BlockMetaData *) ((uint32) extendingBlock+ sizeToAllocate),temp,sizeToAllocate,temp->size);
+								extendingBlock->size = temp->size - (size + sizeOfMetaData());
+								extendingBlock->is_free = 1;
+								cprintf("extend block freed\n");
+								LIST_INSERT_AFTER(&Heap_MetaBlock, temp, extendingBlock);
+								temp->is_free = 0;
+								temp->size = sizeToAllocate;
+								cprintf("checkpoint 11 allocff\n");
+			}
+
+			cprintf("checkpoint 12 allocff\n");
+			return (struct BlockMetaData*) ((uint32) extendingBlock + sizeOfMetaData());
 
 }
 

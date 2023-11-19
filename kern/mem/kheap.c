@@ -6,29 +6,40 @@
 #define DYNAMIC_ALLOCATOR_DS 0 //ROUNDUP(NUM_OF_KHEAP_PAGES * sizeof(struct MemBlock), PAGE_SIZE)
 #define INITIAL_KHEAP_ALLOCATIONS (DYNAMIC_ALLOCATOR_DS + KERNEL_SHARES_ARR_INIT_SIZE + KERNEL_SEMAPHORES_ARR_INIT_SIZE)
 #define ACTUAL_START ((KERNEL_HEAP_START + DYN_ALLOC_MAX_SIZE + PAGE_SIZE) + INITIAL_KHEAP_ALLOCATIONS)
-
+extern uint32 sys_calculate_free_frames() ;
+uint32 kheap_start;
+uint32 kheap_segment_break;
+uint32 kheap_hard_limit;
 int initialize_kheap_dynamic_allocator(uint32 daStart, uint32 initSizeToAllocate, uint32 daLimit)
 {
+
+
 	//TODO: [PROJECT'23.MS2 - #01] [1] KERNEL HEAP - initialize_kheap_dynamic_allocator()
 	//Initialize the dynamic allocator of kernel heap with the given start address, size & limit
 	kheap_start = daStart;
 	kheap_segment_break =  (daStart + initSizeToAllocate);
 	kheap_hard_limit =  daLimit;
+
 	if(kheap_segment_break>kheap_hard_limit)
 	{
+
 		return E_NO_MEM;
 	}
+
 	//All pages in the given range should be allocated
 	uint32 iterator = kheap_start;
 	struct FrameInfo *ptr_frame_info;
+
 	while(iterator!=kheap_segment_break)
 	{
 		int ret = allocate_frame(&ptr_frame_info) ;
+
 		if(ret==0)
 		{
-			map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT);
+				map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT|PERM_WRITEABLE|PERM_MODIFIED|PERM_BUFFERED|PERM_USED);
 		}
 		else{
+
 			return E_NO_MEM;
 		}
 		iterator+=PAGE_SIZE;
@@ -43,12 +54,14 @@ int initialize_kheap_dynamic_allocator(uint32 daStart, uint32 initSizeToAllocate
 
 	//Comment the following line(s) before start coding...
 	//panic("not implemented yet");
+
 	return 0;
 }
 
 
 void* sbrk(int increment)
 {
+
 
 	//TODO: [PROJECT'23.MS2 - #02] [1] KERNEL HEAP - sbrk()
 	/* increment > 0: move the segment break of the kernel to increase the size of its heap,
@@ -70,7 +83,6 @@ void* sbrk(int increment)
 /*	return (void*)-1 ;
 	panic("not implemented yet");*/
 	uint32 *lastBreak=(uint32*)kheap_segment_break;
-    cprintf("inc %d  brk %d  limit %d  inc+brk %d\n ",increment,kheap_segment_break,kheap_hard_limit,(kheap_segment_break+increment));
 	if(kheap_segment_break+increment>kheap_hard_limit ){
 
 			return (void*)-1 ;
@@ -90,7 +102,7 @@ void* sbrk(int increment)
 			 struct FrameInfo *ptr_frame_info;
 			 int ret=allocate_frame(&ptr_frame_info) ;
 			 if(ret==0){
-				 map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT);
+				 map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT|PERM_WRITEABLE|PERM_MODIFIED|PERM_BUFFERED|PERM_USED);
 
 			 }
 			 else{
@@ -126,10 +138,11 @@ void* sbrk(int increment)
 
 
 
-uint32 start=ACTUAL_START;
+
 
 void* kmalloc(unsigned int size)
 {
+     cprintf("checkpoint 1\n");
 	//TODO: [PROJECT'23.MS2 - #03] [1] KERNEL HEAP - kmalloc()
 		//refer to the project presentation and documentation for details
 		// use "isKHeapPlacementStrategyFIRSTFIT() ..." functions to check the current strategy
@@ -137,59 +150,65 @@ void* kmalloc(unsigned int size)
 		//change this "return" according to your answer
 		//kpanic_into_prompt("kmalloc() is not implemented yet...!!");
 		//return NULL;
-		if(size<=DYN_ALLOC_MAX_BLOCK_SIZE){
 
+		if(size<=DYN_ALLOC_MAX_BLOCK_SIZE){
+			cprintf("checkpoint 2\n");
 			if(isKHeapPlacementStrategyFIRSTFIT()){
-			cprintf("calling block allocator\n");
+				cprintf("checkpoint 3\n");
 			return alloc_block_FF(size);
+
 			}
 			if(isKHeapPlacementStrategyBESTFIT()){
 				return alloc_block_BF(size);
 			}
 		}
 		int pagesToAllocate= ROUNDUP(size,PAGE_SIZE);
+		cprintf("checkpoint 4\n");
 		pagesToAllocate/=PAGE_SIZE;
+		cprintf("checkpoint 5\n");
+		/*cprintf("pages to allocate %d\n",pagesToAllocate);*/
+
+	    int x=sys_calculate_free_frames();
+
 		if(size>=KERNEL_HEAP_MAX - ACTUAL_START + 1)
 		{
+			cprintf("checkpoint 6\n");
 			return NULL;
 	    }
 
-		uint32 iterator = start;
+		uint32 iterator = ACTUAL_START;
 		uint32 accum=0;
 		uint32 *firstAddress;
 		bool first=0;
-	/* cprintf("it: %d",iterator);*/
+		cprintf("checkpoint 7\n");
 		while(iterator!=KERNEL_HEAP_MAX&&pagesToAllocate!=0){
 			 struct FrameInfo *ptr_frame_info;
 			 if(free_frame_list.size<pagesToAllocate){
-				 cprintf("insufficient size");
+
 				 return NULL;
 			 }
 
 			 int ret=allocate_frame(&ptr_frame_info) ;
-				 if(ptr_frame_info->references!=0){
-						 iterator+= PAGE_SIZE;
-						 continue;
-					 }
-
 			if(ret==0){
 				pagesToAllocate--;
-				map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT);
+
+				map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT|PERM_WRITEABLE|PERM_MODIFIED|PERM_BUFFERED|PERM_USED);
+				/*cprintf("pages to allocate %d\n",pagesToAllocate);*/
 
 				if(!first){
 					first=1;
-
 					 firstAddress=(uint32*)iterator;
+					 cprintf("first add %d\n",firstAddress);
 				}
 
 			}
 
 			iterator+=PAGE_SIZE;
-			accum+= PAGE_SIZE;
-		}
 
-	cprintf("actual:%d first: %d \n",ACTUAL_START,firstAddress);
-	start+=accum;
+		}
+		cprintf("checkpoint 8\n");
+        cprintf("allocated %d",x-sys_calculate_free_frames());
+        cprintf("checkpoint 9\n");
 		return firstAddress;
 }
 

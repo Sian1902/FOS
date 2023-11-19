@@ -27,16 +27,26 @@ void create_shares_array(uint32 numOfElements)
 {
 #if USE_KHEAP
 	MAX_SHARES  = numOfElements ;
+
 	shares = kmalloc(numOfElements*sizeof(struct Share));
 	if (shares == NULL)
 	{
+
 		panic("Kernel runs out of memory\nCan't create the array of shared objects.");
 	}
 #endif
+
+
+	if(shares==NULL){
+		cprintf("NULL\n");
+	}
 	for (int i = 0; i < MAX_SHARES; ++i)
 	{
+
 		memset(&(shares[i]), 0, sizeof(struct Share));
+
 		shares[i].empty = 1;
+
 	}
 }
 

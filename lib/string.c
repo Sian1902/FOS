@@ -103,17 +103,25 @@ strfind(const char *s, char c)
 	return (char *) s;
 }
 
-
+int i=0;
 void *
 memset(void *v, int c, uint32 n)
 {
+
+
+	i++;
+
 	char *p;
 	int m;
 
 	p = v;
 	m = n;
-	while (--m >= 0)
+
+
+	while (--m >= 0){
+
 		*p++ = c;
+	}
 
 	return v;
 }

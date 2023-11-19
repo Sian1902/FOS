@@ -6,9 +6,7 @@
 #endif
 
 #include <inc/types.h>
-uint32 kheap_start;
-uint32 kheap_segment_break;
-uint32 kheap_hard_limit;
+
 
 /*2017*/
 uint32 _KHeapPlacementStrategy;

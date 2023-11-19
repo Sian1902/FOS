@@ -239,7 +239,7 @@ if (va == NULL){
 void *realloc_block_FF(void* va, uint32 new_size) {
 	//TODO: [PROJECT'23.MS1 - #8] [3] DYNAMIC ALLOCATOR - realloc_block_FF()
 	//panic("realloc_block_FF is not implemented yet");
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 	//return NULL;
 	struct BlockMetaData *currBlock = ((struct BlockMetaData *)va - 1) ;
 	struct BlockMetaData *nextBlock= currBlock->prev_next_info.le_next;
@@ -250,7 +250,7 @@ void *realloc_block_FF(void* va, uint32 new_size) {
 		return va;
 	}
 
-=======
+=======*/
 	if(va==NULL&&new_size!=0){
 		return alloc_block_FF(new_size);
 	}
@@ -300,6 +300,6 @@ void *realloc_block_FF(void* va, uint32 new_size) {
 		return (struct BlockMetaData *)((uint32)currBlock+sizeOfMetaData());
 	}
 	return NULL;
->>>>>>> alloc-ff
+/*>>>>>>> alloc-ff*/
 
 }

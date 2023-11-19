@@ -481,30 +481,72 @@ void sys_bypassPageFault(uint8 instrLength)
 void* sys_sbrk(int increment)
 {
 	//TODO: [PROJECT'23.MS2 - #08] [2] USER HEAP - Block Allocator - sys_sbrk() [Kernel Side]
-	//MS2: COMMENT THIS LINE BEFORE START CODING====
-	return (void*)-1 ;
-	//====================================================
+		//MS2: COMMENT THIS LINE BEFORE START CODING====
+		//return (void*)-1 ;
 
-	/*2023*/
-	/* increment > 0: move the segment break of the current user program to increase the size of its heap,
-	 * 				you should allocate NOTHING,
-	 * 				and returns the address of the previous break (i.e. the beginning of newly mapped memory).
-	 * increment = 0: just return the current position of the segment break
-	 * increment < 0: move the segment break of the current user program to decrease the size of its heap,
-	 * 				you should deallocate pages that no longer contain part of the heap as necessary.
-	 * 				and returns the address of the new break (i.e. the end of the current heap space).
-	 *
-	 * NOTES:
-	 * 	1) You should only have to allocate or deallocate pages if the segment break crosses a page boundary
-	 * 	2) New segment break should be aligned on page-boundary to avoid "No Man's Land" problem
-	 * 	3) As in real OS, allocate pages lazily. While sbrk moves the segment break, pages are not allocated
-	 * 		until the user program actually tries to access data in its heap (i.e. will be allocated via the fault handler).
-	 * 	4) Allocating additional pages for a process’ heap will fail if, for example, the free frames are exhausted
-	 * 		or the break exceed the limit of the dynamic allocator. If sys_sbrk fails, the net effect should
-	 * 		be that sys_sbrk returns (void*) -1 and that the segment break and the process heap are unaffected.
-	 * 		You might have to undo any operations you have done so far in this case.
-	 */
-	struct Env* env = curenv; //the current running Environment to adjust its break limit
+	//	if(increment<0){
+	//		deallocate()
+	//	}
+	//	else if(increment>0||){
+	//
+	//	}
+	//	else {
+	//		return ;
+	//	}
+		//====================================================
+
+		/*2023*/
+		/* increment > 0: move the segment break of the current user program to increase the size of its heap,
+		 * 				you should allocate NOTHING,
+		 * 				and returns the address of the previous break (i.e. the beginning of newly mapped memory).
+		 * increment = 0: just return the current position of the segment break
+		 * increment < 0: move the segment break of the current user program to decrease the size of its heap,
+		 * 				you should deallocate pages that no longer contain part of the heap as necessary.
+		 * 				and returns the address of the new break (i.e. the end of the current heap space).
+		 *
+		 * NOTES:
+		 * 	1) You should only have to allocate or deallocate pages if the segment break crosses a page boundary
+		 * 	2) New segment break should be aligned on page-boundary to avoid "No Man's Land" problem
+		 * 	3) As in real OS, allocate pages lazily. While sbrk moves the segment break, pages are not allocated
+		 * 		until the user program actually tries to access data in its heap (i.e. will be allocated via the fault handler).
+		 * 	4) Allocating additional pages for a process’ heap will fail if, for example, the free frames are exhausted
+		 * 		or the break exceed the limit of the dynamic allocator. If sys_sbrk fails, the net effect should
+		 * 		be that sys_sbrk returns (void*) -1 and that the segment break and the process heap are unaffected.
+		 * 		You might have to undo any operations you have done so far in this case.
+		 */
+		struct Env* env = curenv; //the current running Environment to adjust its break limit
+		if((uint32*)((uint32) env->segmentBreak+increment)>=env->hardLimit){
+				return (void*)-1;
+			}
+		   uint32* lastBreak = env->segmentBreak;
+		  if(increment==0){
+			  return lastBreak;
+		  }
+		  else if(increment >0){
+			  int inc=ROUNDUP(increment,PAGE_SIZE);
+			  env->segmentBreak=(uint32*)((uint32) env->segmentBreak+(inc));
+			  for(int i=0;i<inc/PAGE_SIZE;i++){
+				  uint32 *pageToBeAdded=(uint32*)((uint32) env->segmentBreak+(i*PAGE_SIZE));
+		          pf_add_empty_env_page(env,*pageToBeAdded,1);
+			  }
+			  return lastBreak;
+		  }
+		  else{
+			  int dec = -1*increment;
+			  dec=ROUNDDOWN(dec,PAGE_SIZE);
+			  for(int i=1;i<=dec/PAGE_SIZE;i++){
+				 uint32 *pageToBeFreed=(uint32*)((uint32) env->segmentBreak-(i*PAGE_SIZE));
+				  pf_remove_env_page(env,*pageToBeFreed);
+			  }
+			  env->segmentBreak=(uint32*)((uint32) env->segmentBreak-(dec));
+			  if(env->segmentBreak>=env->start){
+
+			  		  return env->segmentBreak;
+			  }
+			  else{
+				  return (void*)-1;
+			  }
+		  }
 
 
 }
