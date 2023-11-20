@@ -1,0 +1,4 @@
+/bochs.log
+*.img
+obj/kern/bochs.img
+obj
