@@ -208,7 +208,7 @@ struct FrameInfo {
 	// to this page, for frames allocated using allocate_frame.
 	// frames allocated at boot time using memory_manager.c's
 	// boot_allocate_space do not have valid reference count fields.
-
+    uint32 numOfPages;
 	uint16 references;
 	uint32 va;
 	struct Env *environment;

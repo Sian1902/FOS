@@ -151,7 +151,7 @@ int test_kmalloc()
 
 	}
 	if (correct)	eval+=40 ;
-    cprintf("evaluation %d%",eval);
+
 	correct = 1 ;
 	//Checking read/write on the allocated spaces
 	{
@@ -755,7 +755,7 @@ int test_kfree_bestfirstfit()
 				ptr[i] = 3 ;
 			}
 		}
-
+         cprintf("passed block allocator test\n");
 		//[PAGE ALLOCATOR]
 		{
 			//2 MB
@@ -829,7 +829,7 @@ int test_kfree_bestfirstfit()
 			}
 		}
 	}
-
+    cprintf("allocated all frames succesfully\n");
 	//kfree some of the allocated spaces [10%]
 	{
 		//kfree 1st 2 MB

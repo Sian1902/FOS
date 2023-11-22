@@ -10,15 +10,6 @@ uint32 kheap_start;
 uint32 kheap_segment_break;
 uint32 kheap_hard_limit;
 
-struct page{
-	uint32 startAddress;
-	uint8 isStart;
-	uint8 isFree;
-	int numOfPages;
-	LIST_ENTRY(page) prev_next_info;
-};
-LIST_HEAD(pageList,page);
-struct pageList page_list;
 
 /*2017*/
 uint32 _KHeapPlacementStrategy;
