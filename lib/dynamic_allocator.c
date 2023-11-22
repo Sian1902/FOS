@@ -288,12 +288,14 @@ void free_block(void *va)
 		currBlock->size += nextBlock->size;
 		nextBlock->is_free = 0;
 		nextBlock->size = 0;
+		LIST_REMOVE(&Heap_MetaBlock,nextBlock);
 	}
 	//prev is free or prev and next are free
 	if (prevBlock != NULL && prevBlock->is_free) {
 		prevBlock->size += currBlock->size;
 		currBlock->size = 0;
 		currBlock->is_free = 0;
+		LIST_REMOVE(&Heap_MetaBlock,currBlock);
 
 	}
 
