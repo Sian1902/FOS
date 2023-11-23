@@ -71,7 +71,7 @@ void* malloc(uint32 size)
 		uint32 startVa;
 		bool startOfVa=0;
 		while(high<pageAllocEnd){
-			if(){
+			if(high!=low){
 				high+=PAGE_SIZE;
 				cntAvailablePages++;
 				if(startOfVa==0){
@@ -89,6 +89,7 @@ void* malloc(uint32 size)
 		if(cntAvailablePages==pagesToAllocate){
 			sys_allocate_user_mem(startVa,sizeToAllocate);
 		}
+	}
 
 	return NULL;
 	//Use sys_isUHeapPlacementStrategyFIRSTFIT() and	sys_isUHeapPlacementStrategyBESTFIT()

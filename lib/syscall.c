@@ -361,3 +361,6 @@ uint32 sys_hard_limit(){
 
 	return syscall(SYS_hard_limit,0,0,0,0,0);
 }
+bool sys_get_perm(uint32 virtual_address){
+	return syscall(SYS_get_perm,virtual_address,0,0,0,0);
+}

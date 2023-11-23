@@ -132,10 +132,14 @@ void allocate_user_mem(struct Env* e, uint32 virtual_address, uint32 size)
 	if(ret!=0){
 		create_page_table(page_table_dir_ptr,virtual_address);
 	}
-	struct marked* m=(struct marked*)virtual_address;
-	m->startAddr=virtual_address;
-	m->size=size;
-	LIST_INSERT_TAIL(marked_list, m);
+	int pagesToAllocate=size/PAGE_SIZE;
+	uint32 start=virtual_address;
+	for(int i=0;i<pagesToAllocate;i++){
+		pt_set_page_permissions(page_table_dir_ptr,start,PERM_USER|PERM_WRITEABLE,PERM_AVAILABLE);
+		start+=PAGE_SIZE;
+	}
+
+
 
 }
 
