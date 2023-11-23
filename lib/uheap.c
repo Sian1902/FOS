@@ -71,7 +71,8 @@ void* malloc(uint32 size)
 		uint32 startVa;
 		bool startOfVa=0;
 		while(high<pageAllocEnd){
-			if(high!=low){
+			uint32 permission= sys_get_perm(high);
+			if(permission==0){
 				high+=PAGE_SIZE;
 				cntAvailablePages++;
 				if(startOfVa==0){
@@ -89,12 +90,12 @@ void* malloc(uint32 size)
 		if(cntAvailablePages==pagesToAllocate){
 			sys_allocate_user_mem(startVa,sizeToAllocate);
 		}
-	}
 
-	return NULL;
+
 	//Use sys_isUHeapPlacementStrategyFIRSTFIT() and	sys_isUHeapPlacementStrategyBESTFIT()
 	//to check the current strategy
-
+	}
+	return NULL;
 }
 
 //=================================
@@ -125,6 +126,7 @@ void free(void* virtual_address)
 			 panic("can't free");
 		 }
 */
+	panic("asdazsd");
 }
 
 

@@ -17,7 +17,13 @@
 /******************************/
 /*[1] RAM CHUNKS MANIPULATION */
 /******************************/
-
+struct marked{
+	uint32 startAddr;
+	uint32 size;
+	LIST_ENTRY(marked) prev_next_info;
+};
+LIST_HEAD(MarkedLIST, marked);
+struct MarkedLIST *marked_list;
 //===============================
 // 1) CUT-PASTE PAGES IN RAM:
 //===============================

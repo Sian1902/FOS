@@ -247,6 +247,14 @@ uint32 sys_hard_limit(){
 	uint32 hl=(uint32)curenv->hardLimit;
 	return hl;
 }
+uint32 sys_get_perm(uint32 virtual_address){
+	struct Env* e=curenv;
+	int page_permission=pt_get_page_permissions(e->env_page_directory,virtual_address);
+	if(!(page_permission & PERM_AVAILABLE)){
+		return 0;
+	}
+	return 1;
+}
 /*******************************/
 /* PAGE FILE SYSTEM CALLS */
 /*******************************/
@@ -485,9 +493,15 @@ void* sys_sbrk(int increment)
 {
 	//TODO: [PROJECT'23.MS2 - #08] [2] USER HEAP - Block Allocator - sys_sbrk() [Kernel Side]
 	//MS2: COMMENT THIS LINE BEFORE START CODING====
-	return (void*)-1 ;
+	//return (void*)-1 ;
 	//====================================================
+	struct Env *e=curenv;
+	if(increment==0){
+		return e->hardLimit;
+	}
+	else if(increment>0){
 
+	}
 	/*2023*/
 	/* increment > 0: move the segment break of the current user program to increase the size of its heap,
 	 * 				you should allocate NOTHING,
@@ -509,9 +523,8 @@ void* sys_sbrk(int increment)
 	 */
 	struct Env* env = curenv; //the current running Environment to adjust its break limit
 
-
+	panic("asda");
 }
-// andy hard limit call
 
 
 /**************************************************************************/
@@ -721,6 +734,9 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 		return 	-E_INVAL;
 	case SYS_hard_limit:
 		return sys_hard_limit();
+	case SYS_get_perm:
+		return sys_get_perm(a1);
+
 		break;
 	}
 	//panic("syscall not implemented");
