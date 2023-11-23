@@ -70,9 +70,11 @@ void* malloc(uint32 size)
 		uint32 high=low;
 		uint32 startVa;
 		bool startOfVa=0;
+		uint32 permission=0;
 		while(high<pageAllocEnd){
-			uint32 permission= sys_get_perm(high);
-			if(permission==0){
+		// sys_get_perm(high);
+
+			if(permission==1){
 				high+=PAGE_SIZE;
 				cntAvailablePages++;
 				if(startOfVa==0){
