@@ -505,7 +505,26 @@ void* sys_sbrk(int increment)
 	 * 		You might have to undo any operations you have done so far in this case.
 	 */
 	struct Env* env = curenv; //the current running Environment to adjust its break limit
+	if((uint32*)((uint32) env->segmentBreak+increment)>=env->hardLimit){
+				return (void*)-1;
+			}
+	if((uint32*)((uint32) env->segmentBreak+increment)<env->start){
+				return (void*)-1;
+			}
 
+		   uint32* lastBreak = env->segmentBreak;
+		  if(increment==0){
+			  return lastBreak;
+		  }
+	    if(increment>0){
+	    	uint32 inc=ROUNDUP(increment,PAGE_SIZE);
+	    	env->segmentBreak+=inc;
+	    	return lastBreak;
+	    }
+	    else{
+          env->segmentBreak+increment;
+          return env->segmentBreak;
+	    }
 
 }
 
