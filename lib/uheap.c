@@ -16,7 +16,13 @@ void InitializeUHeap()
 		FirstTimeFlag = 0;
 	}
 }
-
+struct marked{
+	uint32 startAddr;
+	uint32 size;
+	LIST_ENTRY(marked) prev_next_info;
+};
+LIST_HEAD(MarkedLIST, marked);
+struct MarkedLIST *marked_list;
 //==================================================================================//
 //============================ REQUIRED FUNCTIONS ==================================//
 //==================================================================================//
@@ -33,6 +39,7 @@ void* sbrk(int increment)
 //=================================
 // [2] ALLOCATE SPACE IN USER HEAP:
 //=================================
+
 void* malloc(uint32 size)
 {
 	//==============================================================
@@ -42,7 +49,47 @@ void* malloc(uint32 size)
 	//==============================================================
 	//TODO: [PROJECT'23.MS2 - #09] [2] USER HEAP - malloc() [User Side]
 	// Write your code here, remove the panic and write your code
-	panic("malloc() is not implemented yet...!!");
+	//panic("malloc() is not implemented yet...!!");
+	if(size<=DYN_ALLOC_MAX_BLOCK_SIZE){
+		if(sys_isUHeapPlacementStrategyFIRSTFIT()){
+			alloc_block_FF(size);
+		}
+		else if(sys_isUHeapPlacementStrategyBESTFIT()){
+			alloc_block_BF(size);
+		}
+	}
+	else{
+		int pagesToAllocate=ROUNDUP(size,PAGE_SIZE);
+		int sizeToAllocate=pagesToAllocate;
+		pagesToAllocate/=PAGE_SIZE;
+		uint32 u_hard_limit= sys_hard_limit();
+		uint32 pageAllocStart=u_hard_limit+PAGE_SIZE;
+		uint32 pageAllocEnd=USER_HEAP_MAX;
+		uint32 cntAvailablePages=0;
+		uint32 low=pageAllocStart;
+		uint32 high=low;
+		uint32 startVa;
+		bool startOfVa=0;
+		while(high<pageAllocEnd){
+			if(){
+				high+=PAGE_SIZE;
+				cntAvailablePages++;
+				if(startOfVa==0){
+					startVa=low;
+				}
+		    }
+		    else{
+		    	high+=PAGE_SIZE;
+		    	low=high;
+		    	cntAvailablePages=0;
+		    	startOfVa=0;
+		    	continue;
+		    }
+		}
+		if(cntAvailablePages==pagesToAllocate){
+			sys_allocate_user_mem(startVa,sizeToAllocate);
+		}
+
 	return NULL;
 	//Use sys_isUHeapPlacementStrategyFIRSTFIT() and	sys_isUHeapPlacementStrategyBESTFIT()
 	//to check the current strategy
@@ -56,7 +103,27 @@ void free(void* virtual_address)
 {
 	//TODO: [PROJECT'23.MS2 - #11] [2] USER HEAP - free() [User Side]
 	// Write your code here, remove the panic and write your code
-	panic("free() is not implemented yet...!!");
+	//panic("free() is not implemented yet...!!");
+	/*if (virtual_address >= (void*) kheap_start
+		      && virtual_address < (void*) kheap_segment_break) {
+		    free_block(virtual_address);
+		  }
+	else if (virtual_address
+		      >= (void*) (kheap_hard_limit + PAGE_SIZE)&& virtual_address <(void*)KERNEL_HEAP_MAX){
+			 uint32* ptr_page_table;
+			 uint32 framesToBeFreed=get_frame_info(ptr_page_directory , (uint32)virtual_address ,&ptr_page_table)->numOfPages;
+			 uint32 startOfProcess=get_frame_info(ptr_page_directory , (uint32)virtual_address ,&ptr_page_table)->va;
+			 for(int i=0;i<framesToBeFreed;i++){
+				 unmap_frame(ptr_page_directory,startOfProcess);
+				 sys_free_user_mem();
+				 startOfProcess+=PAGE_SIZE;
+			 }
+
+		 }
+		 else{
+			 panic("can't free");
+		 }
+*/
 }
 
 

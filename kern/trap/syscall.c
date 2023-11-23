@@ -243,7 +243,10 @@ void sys_clearFFL()
 		allocate_frame(&ptr_tmp_FI) ;
 	}
 }
-
+uint32 sys_hard_limit(){
+	uint32 hl=(uint32)curenv->hardLimit;
+	return hl;
+}
 /*******************************/
 /* PAGE FILE SYSTEM CALLS */
 /*******************************/
@@ -508,6 +511,8 @@ void* sys_sbrk(int increment)
 
 
 }
+// andy hard limit call
+
 
 /**************************************************************************/
 /************************* SYSTEM CALLS HANDLER ***************************/
@@ -714,6 +719,8 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 
 	case NSYSCALLS:
 		return 	-E_INVAL;
+	case SYS_hard_limit:
+		return sys_hard_limit();
 		break;
 	}
 	//panic("syscall not implemented");

@@ -115,17 +115,28 @@ uint32 calculate_required_frames(uint32* page_directory, uint32 sva, uint32 size
 //=====================================
 // 1) ALLOCATE USER MEMORY:
 //=====================================
+
 void allocate_user_mem(struct Env* e, uint32 virtual_address, uint32 size)
 {
 	/*=============================================================================*/
 	//TODO: [PROJECT'23.MS2 - #10] [2] USER HEAP - allocate_user_mem() [Kernel Side]
 	/*REMOVE THESE LINES BEFORE START CODING */
-	inctst();
-	return;
 	/*=============================================================================*/
 
 	// Write your code here, remove the panic and write your code
-	panic("allocate_user_mem() is not implemented yet...!!");
+	//panic("allocate_user_mem() is not implemented yet...!!");
+	uint32* page_table_dir_ptr;
+	uint32*  page_table_ptr;
+	page_table_dir_ptr=e->env_page_directory;
+	int ret=get_page_table(page_table_dir_ptr,virtual_address,&page_table_ptr);
+	if(ret!=0){
+		create_page_table(page_table_dir_ptr,virtual_address);
+	}
+	struct marked* m=(struct marked*)virtual_address;
+	m->startAddr=virtual_address;
+	m->size=size;
+	LIST_INSERT_TAIL(marked_list, m);
+
 }
 
 //=====================================
