@@ -35,7 +35,7 @@ int initialize_kheap_dynamic_allocator(uint32 daStart, uint32 initSizeToAllocate
 
       if(ret==0)
       {
-          map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT|PERM_WRITEABLE|PERM_AVAILABLE|PERM_BUFFERED|PERM_MODIFIED|PERM_USED);
+          map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_WRITEABLE);
           ptr_frame_info->va=iterator;
       }
       else{
@@ -78,7 +78,7 @@ void* sbrk(int increment) {
          struct FrameInfo *ptr_frame_info;
          int ret=allocate_frame(&ptr_frame_info) ;
          if(ret==0){
-           map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_PRESENT|PERM_WRITEABLE|PERM_AVAILABLE|PERM_BUFFERED|PERM_MODIFIED|PERM_USED);
+           map_frame(ptr_page_directory,ptr_frame_info,iterator,PERM_WRITEABLE);
            ptr_frame_info->va=iterator;
          }
          else{

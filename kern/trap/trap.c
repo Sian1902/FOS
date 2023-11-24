@@ -379,16 +379,35 @@ void fault_handler(struct Trapframe *tf)
 			//(e.g. pointing to unmarked user heap page, kernel or wrong access rights),
 			//your code is here
 			struct Env* faulted_env_tmp = curenv;
-					uint32 permissions = pt_get_page_permissions(faulted_env_tmp->env_page_directory, fault_va );
-					bool isFault=0;
-					if (fault_va>=KERNEL_HEAP_START && fault_va <= KERNEL_HEAP_MAX)
-						isFault =1;
-					if (!(permissions & PERM_WRITEABLE))
-						isFault =1;
-					if((permissions & PERM_USER))
-						isFault =1;
-					if (isFault)
+			cprintf("entered\n");
+			       uint32* ptr_page_table;
+
+					uint32 permissions = pt_get_page_permissions(curenv->env_page_directory,(uint32) fault_va );
+					cprintf("fault address%d\n",fault_va);
+					cprintf("perms %d\n",permissions);
+
+					if (fault_va>USER_LIMIT/*>=KERNEL_HEAP_START && fault_va < KERNEL_HEAP_MAX*/){
+
 						sched_kill_env(curenv->env_id);
+						//isFault =1;
+					}
+					if((permissions & PERM_PRESENT)){
+
+						sched_kill_env(curenv->env_id);
+
+								}
+					if ((!(permissions & PERM_WRITEABLE))){
+
+						sched_kill_env(curenv->env_id);
+
+					}
+
+
+					/*if(!(permissions&PERM_MARKED)){
+						cprintf("not marked\n");
+						sched_kill_env(curenv->env_id);
+
+					}*/
 
 
 			/*============================================================================================*/
@@ -396,6 +415,7 @@ void fault_handler(struct Trapframe *tf)
 
 		/*2022: Check if fault due to Access Rights */
 		int perms = pt_get_page_permissions(faulted_env->env_page_directory, fault_va);
+		cprintf("perms 2 %d\n",perms);
 		if (perms & PERM_PRESENT)
 			panic("Page @va=%x is exist! page fault due to violation of ACCESS RIGHTS\n", fault_va) ;
 
