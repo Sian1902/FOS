@@ -96,27 +96,34 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 				sched_kill_env(curenv->env_id);
 			}
 			map_frame(dir,frame,fault_va,PERM_WRITEABLE|PERM_USER);
-		    pt_set_page_permissions(dir,fault_va,PERM_USER|PERM_WRITEABLE|PERM_MARKED,PERM_AVAILABLE);
 			int retpage=pf_read_env_page(curenv,(uint32*)fault_va);
+			int permissions=pt_get_page_permissions(dir,fault_va);
 			bool notFoudStack=0;
 			bool notFoudHeap=0;
 			if(retpage!=0){
-             cprintf("page return isn't zero \n");
 				if(fault_va<USER_HEAP_START||fault_va>=USER_HEAP_MAX){
 					notFoudHeap=1;
 				}
-				if(fault_va<=USTACKBOTTOM||fault_va>USTACKTOP){
-					cprintf("not stack\n");
+				if(fault_va<USTACKBOTTOM||fault_va>=USTACKTOP){
 					notFoudStack=1;
 				}
 			}
 			if(notFoudHeap&&notFoudStack){
 				sched_kill_env(curenv->env_id);
 			}
+			if(fault_va>=USER_HEAP_START&&fault_va<USER_HEAP_MAX){
+			if(!(permissions&PERM_AVAILABLE)){
+				sched_kill_env(curenv->env_id);
+			}
+			}
 
-			cprintf("mapped frame\n");
+
+
 			struct WorkingSetElement* object =env_page_ws_list_create_element(curenv,fault_va);
 			LIST_INSERT_TAIL(&curenv->page_WS_list, object);
+			if(LIST_SIZE(&curenv->page_WS_list) == (curenv->page_WS_max_size)){
+				curenv->page_last_WS_element=curenv->page_WS_list.lh_first;
+			}
 
 
 		//refer to the project presentation and documentation for details

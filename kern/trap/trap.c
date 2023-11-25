@@ -378,44 +378,29 @@ void fault_handler(struct Trapframe *tf)
 			//TODO: [PROJECT'23.MS2 - #13] [3] PAGE FAULT HANDLER - Check for invalid pointers
 			//(e.g. pointing to unmarked user heap page, kernel or wrong access rights),
 			//your code is here
-			struct Env* faulted_env_tmp = curenv;
-			cprintf("entered\n");
-			       uint32* ptr_page_table;
+			uint32* ptr_page_table;
 
-					uint32 permissions = pt_get_page_permissions(curenv->env_page_directory,(uint32) fault_va );
-					cprintf("fault address%d\n",fault_va);
-					cprintf("perms %d\n",permissions);
+			uint32 permissions = pt_get_page_permissions(ptr_page_directory,
+					(uint32) fault_va);
+			if (fault_va > USER_LIMIT/*>=KERNEL_HEAP_START && fault_va < KERNEL_HEAP_MAX*/) {
 
-					if (fault_va>USER_LIMIT/*>=KERNEL_HEAP_START && fault_va < KERNEL_HEAP_MAX*/){
+				sched_kill_env(curenv->env_id);
+				//isFault =1;
+			}
 
-						sched_kill_env(curenv->env_id);
-						//isFault =1;
-					}
-					if((permissions & PERM_PRESENT)){
+			if ((!(permissions & PERM_WRITEABLE))&&(permissions & PERM_PRESENT)) {
 
-						sched_kill_env(curenv->env_id);
+				sched_kill_env(curenv->env_id);
 
-								}
-					if ((!(permissions & PERM_WRITEABLE))){
-
-						sched_kill_env(curenv->env_id);
-
-					}
-
-
-					/*if(!(permissions&PERM_MARKED)){
-						cprintf("not marked\n");
-						sched_kill_env(curenv->env_id);
-
-					}*/
-
+			}
 
 			/*============================================================================================*/
+
 		}
 
 		/*2022: Check if fault due to Access Rights */
 		int perms = pt_get_page_permissions(faulted_env->env_page_directory, fault_va);
-		cprintf("perms 2 %d\n",perms);
+
 		if (perms & PERM_PRESENT)
 			panic("Page @va=%x is exist! page fault due to violation of ACCESS RIGHTS\n", fault_va) ;
 

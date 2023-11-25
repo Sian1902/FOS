@@ -495,13 +495,6 @@ void* sys_sbrk(int increment)
 	//MS2: COMMENT THIS LINE BEFORE START CODING====
 	//return (void*)-1 ;
 	//====================================================
-	struct Env *e=curenv;
-	if(increment==0){
-		return e->hardLimit;
-	}
-	else if(increment>0){
-
-	}
 	/*2023*/
 	/* increment > 0: move the segment break of the current user program to increase the size of its heap,
 	 * 				you should allocate NOTHING,
@@ -522,7 +515,7 @@ void* sys_sbrk(int increment)
 	 * 		You might have to undo any operations you have done so far in this case.
 	 */
 	struct Env* env = curenv; //the current running Environment to adjust its break limit
-
+    cprintf("called sbrk\n");
 	panic("asda");
 }
 
