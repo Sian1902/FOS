@@ -172,10 +172,15 @@ void *alloc_block_FF(uint32 size)
 
 			return NULL;
 		}
-		struct BlockMetaData* extendingBlock;
+		struct BlockMetaData* extendingBlock,*sbrBlock;
 		extendingBlock = (struct BlockMetaData*) ((uint32) Heap_MetaBlock.lh_last);
-		extendingBlock->is_free = 0;
+		sbrBlock=(struct BlockMetaData*)((uint32)extendingBlock+sizeToAllocate);
+		sbrBlock->is_free=1;
+		sbrBlock->size=PAGE_SIZE-sizeToAllocate;
+	    extendingBlock->is_free = 0;
 		extendingBlock->size = sizeToAllocate;
+		LIST_INSERT_TAIL(&Heap_MetaBlock,extendingBlock);
+		LIST_INSERT_TAIL(&Heap_MetaBlock,sbrBlock);
 		return (struct BlockMetaData*) ((uint32) extendingBlock + sizeOfMetaData());
 }
 //=========================================

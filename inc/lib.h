@@ -79,7 +79,7 @@ uint32 	sys_isUHeapPlacementStrategyNEXTFIT();
 uint32 	sys_isUHeapPlacementStrategyWORSTFIT();
 void 	sys_set_uheap_strategy(uint32 heapStrategy);
 uint32 	sys_hard_limit();
-
+uint32 sys_get_perm(uint32 virtual_address);
 //Page File
 int 	sys_pf_calculate_allocated_pages(void);
 

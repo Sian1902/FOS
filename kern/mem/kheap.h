@@ -4,7 +4,7 @@
 #ifndef FOS_KERNEL
 # error "This is a FOS kernel header; user programs should not #include it"
 #endif
-#include <inc/queue.h>
+/*#include <inc/queue.h>*/
 #include <inc/types.h>
 uint32 kheap_start;
 uint32 kheap_segment_break;

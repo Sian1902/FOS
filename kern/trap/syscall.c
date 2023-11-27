@@ -51,8 +51,7 @@ static void sys_cputc(const char c)
 
 // Read a character from the system console.
 // Returns the character.
-static int
-sys_cgetc(void)
+static int sys_cgetc(void)
 {
 	int c;
 
@@ -247,14 +246,16 @@ uint32 sys_hard_limit(){
 	uint32 hl=(uint32)curenv->hardLimit;
 	return hl;
 }
-uint32 sys_get_perm(uint32 virtual_address){
+/*uint32 sys_get_perm(uint32 virtual_address){
 	struct Env* e=curenv;
 	int page_permission=pt_get_page_permissions(e->env_page_directory,virtual_address);
-	if(!(page_permission & PERM_AVAILABLE)){
-		return 0;
+
+	if((!(page_permission&PERM_AVAILABLE))){
+      cprintf("marked address %x\n",virtual_address);
+		return 1;
 	}
-	return 1;
-}
+	return 0;
+}*/
 /*******************************/
 /* PAGE FILE SYSTEM CALLS */
 /*******************************/
@@ -492,31 +493,73 @@ void sys_bypassPageFault(uint8 instrLength)
 void* sys_sbrk(int increment)
 {
 	//TODO: [PROJECT'23.MS2 - #08] [2] USER HEAP - Block Allocator - sys_sbrk() [Kernel Side]
-	//MS2: COMMENT THIS LINE BEFORE START CODING====
-	//return (void*)-1 ;
-	//====================================================
-	/*2023*/
-	/* increment > 0: move the segment break of the current user program to increase the size of its heap,
-	 * 				you should allocate NOTHING,
-	 * 				and returns the address of the previous break (i.e. the beginning of newly mapped memory).
-	 * increment = 0: just return the current position of the segment break
-	 * increment < 0: move the segment break of the current user program to decrease the size of its heap,
-	 * 				you should deallocate pages that no longer contain part of the heap as necessary.
-	 * 				and returns the address of the new break (i.e. the end of the current heap space).
-	 *
-	 * NOTES:
-	 * 	1) You should only have to allocate or deallocate pages if the segment break crosses a page boundary
-	 * 	2) New segment break should be aligned on page-boundary to avoid "No Man's Land" problem
-	 * 	3) As in real OS, allocate pages lazily. While sbrk moves the segment break, pages are not allocated
-	 * 		until the user program actually tries to access data in its heap (i.e. will be allocated via the fault handler).
-	 * 	4) Allocating additional pages for a process’ heap will fail if, for example, the free frames are exhausted
-	 * 		or the break exceed the limit of the dynamic allocator. If sys_sbrk fails, the net effect should
-	 * 		be that sys_sbrk returns (void*) -1 and that the segment break and the process heap are unaffected.
-	 * 		You might have to undo any operations you have done so far in this case.
-	 */
-	struct Env* env = curenv; //the current running Environment to adjust its break limit
-    cprintf("called sbrk\n");
-	panic("asda");
+		//MS2: COMMENT THIS LINE BEFORE START CODING====
+		//return (void*)-1 ;
+		//====================================================
+
+		/*2023*/
+		/* increment > 0: move the segment break of the current user program to increase the size of its heap,
+		 * 				you should allocate NOTHING,
+		 * 				and returns the address of the previous break (i.e. the beginning of newly mapped memory).
+		 * increment = 0: just return the current position of the segment break
+		 * increment < 0: move the segment break of the current user program to decrease the size of its heap,
+		 * 				you should deallocate pages that no longer contain part of the heap as necessary.
+		 * 				and returns the address of the new break (i.e. the end of the current heap space).
+		 *
+		 * NOTES:
+		 * 	1) You should only have to allocate or deallocate pages if the segment break crosses a page boundary
+		 * 	2) New segment break should be aligned on page-boundary to avoid "No Man's Land" problem
+		 * 	3) As in real OS, allocate pages lazily. While sbrk moves the segment break, pages are not allocated
+		 * 		until the user program actually tries to access data in its heap (i.e. will be allocated via the fault handler).
+		 * 	4) Allocating additional pages for a processÂ’ heap will fail if, for example, the free frames are exhausted
+		 * 		or the break exceed the limit of the dynamic allocator. If sys_sbrk fails, the net effect should
+		 * 		be that sys_sbrk returns (void*) -1 and that the segment break and the process heap are unaffected.
+		 * 		You might have to undo any operations you have done so far in this case.
+		 */
+		struct Env* env = curenv; //the current running Environment to adjust its break limit
+		uint32 sb= (uint32)env->segmentBreak;
+		uint32 hl= (uint32)env->hardLimit;
+		uint32 envs = (uint32)env->start;
+		if(sb+increment>=hl){
+			return (void*)-1;
+		}
+		if(sb+increment<envs){
+			return (void*)-1;
+		}
+		uint32* lastBreak = env->segmentBreak;
+		if(increment==0){
+			return lastBreak;
+		}
+		if(increment>0){
+			cprintf("inc more than zero !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+			uint32 inc=ROUNDUP(increment,PAGE_SIZE);
+			uint32 start=(uint32)lastBreak;
+		    uint32* ptr_page_table;
+		    env->segmentBreak+=inc;
+		    int ret=get_page_table(env->env_page_directory,start,&ptr_page_table);
+		    if(ret==TABLE_NOT_EXIST){
+		    	create_page_table(env->env_page_directory,start);
+		    }
+		    while(start<(uint32)env->segmentBreak){
+		    	pt_set_page_permissions(env->env_page_directory,start,PERM_WRITEABLE|PERM_AVAILABLE,0);
+		    	start+=PAGE_SIZE;
+		    }
+		    env->segmentBreak=ROUNDUP(env->segmentBreak,PAGE_SIZE);
+		    return lastBreak;
+		}
+		else{
+			uint32 dec=-1*increment;
+			ROUNDDOWN(increment,PAGE_SIZE);
+		    dec/=PAGE_SIZE;
+		    sb+= increment;
+		    env->segmentBreak= (uint32*)sb;
+		    for(int i=0;i<dec;i++){
+		    	pt_set_page_permissions(env->env_page_directory,(uint32)env->segmentBreak+(i*PAGE_SIZE),0,PERM_PRESENT|PERM_WRITEABLE|PERM_USER|PERM_AVAILABLE);
+		        env_page_ws_invalidate(env,((uint32)env->segmentBreak+(i*PAGE_SIZE)));
+		    }
+
+		    return env->segmentBreak;
+		}
 }
 
 
@@ -762,8 +805,8 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 		return 	-E_INVAL;
 	case SYS_hard_limit:
 		return sys_hard_limit();
-	case SYS_get_perm:
-		return sys_get_perm(a1);
+/*	case SYS_get_perm:
+		return sys_get_perm(a1);*/
 
 		break;
 	}

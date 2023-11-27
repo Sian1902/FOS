@@ -103,8 +103,7 @@ static const char *trapname(int trapno)
 }
 
 
-void
-idt_init(void)
+void idt_init(void)
 {
 	extern struct Segdesc gdt[];
 
@@ -374,25 +373,31 @@ void fault_handler(struct Trapframe *tf)
 	{
 		if (userTrap)
 		{
+
 			/*============================================================================================*/
 			//TODO: [PROJECT'23.MS2 - #13] [3] PAGE FAULT HANDLER - Check for invalid pointers
 			//(e.g. pointing to unmarked user heap page, kernel or wrong access rights),
 			//your code is here
 			uint32* ptr_page_table;
 
-			uint32 permissions = pt_get_page_permissions(ptr_page_directory,
+			uint32 permissions = pt_get_page_permissions(curenv->env_page_directory,
 					(uint32) fault_va);
 			if (fault_va > USER_LIMIT/*>=KERNEL_HEAP_START && fault_va < KERNEL_HEAP_MAX*/) {
-
+				cprintf("killing out of range\n");
 				sched_kill_env(curenv->env_id);
 				//isFault =1;
 			}
 
 			if ((!(permissions & PERM_WRITEABLE))&&(permissions & PERM_PRESENT)) {
-
+				cprintf("killing\n");
 				sched_kill_env(curenv->env_id);
 
 			}
+
+
+			/*if((!(permissions & PERM_WRITEABLE))&& (permissions & PERM_PRESENT)){
+				sched_kill_env(curenv->env_id);
+			}*/
 
 			/*============================================================================================*/
 

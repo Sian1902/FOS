@@ -17,13 +17,7 @@
 /******************************/
 /*[1] RAM CHUNKS MANIPULATION */
 /******************************/
-struct marked{
-	uint32 startAddr;
-	uint32 size;
-	LIST_ENTRY(marked) prev_next_info;
-};
-LIST_HEAD(MarkedLIST, marked);
-struct MarkedLIST *marked_list;
+
 //===============================
 // 1) CUT-PASTE PAGES IN RAM:
 //===============================
@@ -128,23 +122,23 @@ void allocate_user_mem(struct Env* e, uint32 virtual_address, uint32 size)
 	//TODO: [PROJECT'23.MS2 - #10] [2] USER HEAP - allocate_user_mem() [Kernel Side]
 	/*REMOVE THESE LINES BEFORE START CODING */
 	/*=============================================================================*/
+     uint32 numOfPages=size/PAGE_SIZE;
+     uint32 start=virtual_address;
+     uint32* pageDir=e->env_page_directory;
+     uint32* ptr_Page_table=NULL;
 
+    for(int i=0;i<size;i++){
+    	  int ret=get_page_table(e->env_page_directory,virtual_address+(i*PAGE_SIZE),&ptr_Page_table);
+    	        	    	if(ret==TABLE_NOT_EXIST){
+    	        	    		create_page_table(e->env_page_directory,virtual_address+(i*PAGE_SIZE));
+    	        	    	}
+
+		pt_set_page_permissions(e->env_page_directory,virtual_address+(i*PAGE_SIZE),PERM_AVAILABLE,0);
+
+		start+=PAGE_SIZE;
+    }
 	// Write your code here, remove the panic and write your code
 	//panic("allocate_user_mem() is not implemented yet...!!");
-	uint32* page_table_dir_ptr;
-	uint32*  page_table_ptr;
-	page_table_dir_ptr=e->env_page_directory;
-	int ret=get_page_table(page_table_dir_ptr,virtual_address,&page_table_ptr);
-	if(ret!=0){
-		create_page_table(page_table_dir_ptr,virtual_address);
-	}
-	int pagesToAllocate=size/PAGE_SIZE;
-	uint32 start=virtual_address;
-	for(int i=0;i<pagesToAllocate;i++){
-		pt_set_page_permissions(page_table_dir_ptr,start,PERM_USER|PERM_WRITEABLE|PERM_MARKED,PERM_AVAILABLE);
-		start+=PAGE_SIZE;
-	}
-
 
 
 }
