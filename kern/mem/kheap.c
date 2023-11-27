@@ -278,6 +278,68 @@ void *krealloc(void *virtual_address, uint32 new_size)
 {
   //TODO: [PROJECT'23.MS2 - BONUS#1] [1] KERNEL HEAP - krealloc()
   // Write your code here, remove the panic and write your code
+	if(virtual_address==NULL)
+	{
+		return kmalloc(new_size);
+	}
+	if(new_size==0)
+	{
+		kfree(virtual_address);
+		//return?
+	}
+
+	if(virtual_address>=(void *)kheap_start && virtual_address<(void *)kheap_hard_limit)
+	{
+		return realloc_block_FF(virtual_address,new_size);
+	}
+	else if (virtual_address>=(void *)(kheap_hard_limit+PAGE_SIZE) && virtual_address<(void *)KERNEL_HEAP_MAX)
+	{
+		// org
+		uint32 * ptr_page_table;
+		uint32 wantedNumPages = new_size/PAGE_SIZE;
+		get_page_table(ptr_page_directory,(uint32) virtual_address,&ptr_page_table);
+		struct FrameInfo * tempFrame = get_frame_info(ptr_page_directory,(uint32) virtual_address,&ptr_page_table);
+		uint32 numOfPages = tempFrame->numOfPages;
+		// nxt free
+		if (wantedNumPages>numOfPages)
+		{
+		uint32 diffNumPages = wantedNumPages- numOfPages;
+		virtual_address = (void *) ((uint32)virtual_address+(numOfPages*PAGE_SIZE));
+		get_page_table(ptr_page_directory,(uint32) virtual_address,&ptr_page_table);
+	    tempFrame = get_frame_info(ptr_page_directory,(uint32) virtual_address,&ptr_page_table);
+		numOfPages = tempFrame->numOfPages;
+		// condition
+		if(diffNumPages<= numOfPages)
+		{
+			tempFrame->numOfPages = wantedNumPages;
+			while(diffNumPages--){
+				struct FrameInfo *ptr_frame_info;
+                allocate_frame(&ptr_frame_info);
+                map_frame(ptr_page_directory,ptr_frame_info,(uint32)virtual_address,PERM_WRITEABLE);
+			    ptr_frame_info->va=(uint32)virtual_address;
+			    virtual_address = (void*)((uint32)virtual_address+PAGE_SIZE);
+			}
+		}
+		else
+		{
+			kfree(virtual_address);
+			kmalloc(new_size);
+		}
+		}
+		else
+			{
+			 uint32 diffNumPages = wantedNumPages- numOfPages;
+		     virtual_address = (void *)((uint32)virtual_address+ (wantedNumPages*PAGE_SIZE));
+			 tempFrame->numOfPages = wantedNumPages;
+			 while(diffNumPages--)
+			 {
+				 kfree(virtual_address);
+				 virtual_address+=PAGE_SIZE;
+			 }
+
+			}
+	}
+
   return NULL;
-  panic("krealloc() is not implemented yet...!!");
+  //panic("krealloc() is not implemented yet...!!");
 }

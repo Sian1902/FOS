@@ -55,19 +55,19 @@ void* malloc(uint32 size)
 	uint32 sizeToAllocate=PagesToAllocate;
 	PagesToAllocate/=PAGE_SIZE;
 	uint32 cntAvailablePages=0;
-    int i=0;
+    int cntArrADD=0;
 	while(high<USER_HEAP_MAX){
-		if(arrADD[i]==0){
+		if(arrADD[cntArrADD]==0){
 
 			high+=PAGE_SIZE;
 			cntAvailablePages++;
-			i++;
+			cntArrADD++;
 		}
 		else{
 		 high+=PAGE_SIZE;
 		 low=high;
 		 cntAvailablePages=0;
-		 i++;
+		 cntArrADD++;
 		 //continue;
 		}
 
@@ -75,8 +75,8 @@ void* malloc(uint32 size)
 			if((low)+(cntAvailablePages*PAGE_SIZE)>=USER_HEAP_MAX){
 				return NULL;
 			}
-         for(int j=i-cntAvailablePages;j<i;j++){
-        	 arrADD[j]=low;
+         for(int cntADDCheck=cntArrADD-cntAvailablePages;cntADDCheck<cntArrADD;cntADDCheck++){
+        	 arrADD[cntADDCheck]=low;
          }
 
 			sys_allocate_user_mem(low,PagesToAllocate);
@@ -108,15 +108,15 @@ void free(void* virtual_address)
 		      >= (void*) (hardLimit + PAGE_SIZE)&& virtual_address <(void*)USER_HEAP_MAX){
 		uint32 numOfPages=0;
 		bool found=0;
-		for(int i = 0 ; i<122879;i++)
+		for(int cntArrADD = 0 ; cntArrADD<122879;cntArrADD++)
 		      {
 
-		    	  if(arrADD[i]==(uint32)virtual_address){
+		    	  if(arrADD[cntArrADD]==(uint32)virtual_address){
 		    		  numOfPages++;
-		    		  arrADD[i]=0;
+		    		  arrADD[cntArrADD]=0;
 		    		  found=1;
 		    	  }
-		    	  else if(found&&(void*)arrADD[i]!=virtual_address){
+		    	  else if(found&&(void*)arrADD[cntArrADD]!=virtual_address){
 		    		  break;
 		    	  }
 
