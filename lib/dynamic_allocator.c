@@ -167,22 +167,25 @@ void *alloc_block_FF(uint32 size)
 			}
 		}
 
+		uint32* extender=(uint32*)sbrk(sizeToAllocate);
+		if ( extender!= (void*) -1) {
+			//allocating size
+			temp =(struct BlockMetaData* )extender;
+			//handling fragmentation
+			struct BlockMetaData* fragmenter=(struct BlockMetaData*)((uint32)extender+sizeToAllocate);
+			fragmenter->is_free=1;
+			fragmenter->size=PAGE_SIZE-sizeToAllocate;
+			temp->is_free=0;
+			temp->size=sizeToAllocate;
+			LIST_INSERT_TAIL(&Heap_MetaBlock,temp);
+			LIST_INSERT_TAIL(&Heap_MetaBlock,fragmenter);
+			return (struct BlockMetaData*)((uint32)temp+sizeOfMetaData());
 
-		if (sbrk(sizeToAllocate) == (void*) -1) {
-
-			return NULL;
 		}
-		struct BlockMetaData* extendingBlock,*sbrBlock;
-		extendingBlock = (struct BlockMetaData*) ((uint32) Heap_MetaBlock.lh_last);
-		sbrBlock=(struct BlockMetaData*)((uint32)extendingBlock+sizeToAllocate);
-		sbrBlock->is_free=1;
-		sbrBlock->size=PAGE_SIZE-sizeToAllocate;
-	    extendingBlock->is_free = 0;
-		extendingBlock->size = sizeToAllocate;
-		LIST_INSERT_TAIL(&Heap_MetaBlock,extendingBlock);
-		LIST_INSERT_TAIL(&Heap_MetaBlock,sbrBlock);
-		return (struct BlockMetaData*) ((uint32) extendingBlock + sizeOfMetaData());
+		return NULL;
+
 }
+
 //=========================================
 // [5] ALLOCATE BLOCK BY BEST FIT:
 //=========================================

@@ -94,9 +94,11 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 		struct FrameInfo* frame;
 					uint32* dir=curenv->env_page_directory;
 					int ret=allocate_frame(&frame);
+
 					if(ret!=0){
 						sched_kill_env(curenv->env_id);
 					}
+					map_frame(dir,frame,fault_va,PERM_WRITEABLE|PERM_USER);
 
 					int retpage=pf_read_env_page(curenv,(uint32*)fault_va);
 					int permissions=pt_get_page_permissions(dir,fault_va);
@@ -110,12 +112,7 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 							notFoudStack=1;
 						}
 					}
-					if(fault_va>=USER_HEAP_START&&fault_va<USER_HEAP_MAX){
-						if((!(permissions&PERM_AVAILABLE))){
-													cprintf("not available\n");
-													sched_kill_env(curenv->env_id);
-												}
-					}
+
 
 					if(notFoudHeap&&notFoudStack){
 						cprintf("fault add %x\n",fault_va);
@@ -125,7 +122,6 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 
 					struct WorkingSetElement* object =env_page_ws_list_create_element(curenv,fault_va);
 					LIST_INSERT_TAIL(&curenv->page_WS_list, object);
-					map_frame(dir,frame,fault_va,PERM_WRITEABLE|PERM_USER);
 					if((curenv->page_WS_list.size) == (curenv->page_WS_max_size)){
 						curenv->page_last_WS_element=curenv->page_WS_list.lh_first;
 						curenv->page_last_WS_index=0;

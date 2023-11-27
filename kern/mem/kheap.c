@@ -59,7 +59,7 @@ int initialize_kheap_dynamic_allocator(uint32 daStart, uint32 initSizeToAllocate
 void* sbrk(int increment) {
     // ... (existing code)
 
-  uint32 lastBreak=kheap_segment_break;
+    uint32 lastBreak=kheap_segment_break;
     if(kheap_segment_break+increment>kheap_hard_limit){
 
         return (void*)-1 ;
@@ -70,9 +70,11 @@ void* sbrk(int increment) {
       }
     else if(increment>0){
 
-      int inc=ROUNDUP(increment,PAGE_SIZE);
+    	//increment=ROUNDUP(increment,PAGE_SIZE);
+    	int inc=ROUNDUP(increment,PAGE_SIZE);
       inc/=PAGE_SIZE;
       kheap_segment_break+= increment;
+      kheap_segment_break=ROUNDUP(kheap_segment_break,PAGE_SIZE);
       uint32 iterator=lastBreak;
       for(int i=0;i<inc;i++){
          struct FrameInfo *ptr_frame_info;
@@ -90,9 +92,8 @@ void* sbrk(int increment) {
       return (void*)lastBreak;
     }
     else{
-      int dec = ROUNDDOWN(increment,PAGE_SIZE);
+      int dec = ROUNDDOWN(increment*-1,PAGE_SIZE);
       dec/=PAGE_SIZE;
-      dec*=-1;
       kheap_segment_break+= increment;
         uint32 *ptr_page_table;
        for(int i=1;i<=dec;i++)
@@ -101,13 +102,14 @@ void* sbrk(int increment) {
          unmap_frame(ptr_page_directory,kheap_segment_break+(i*PAGE_SIZE));
 
        }
+
+
        return (void*)kheap_segment_break;
     }
     if(increment > (kheap_segment_break - kheap_hard_limit)|| kheap_segment_break == KERNEL_HEAP_MAX){
        panic("break lower than start");
     }
 }
-
 
 void* kmalloc(unsigned int size) {
 uint32 start=kheap_hard_limit+PAGE_SIZE;

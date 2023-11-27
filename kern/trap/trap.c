@@ -393,6 +393,12 @@ void fault_handler(struct Trapframe *tf)
 				sched_kill_env(curenv->env_id);
 
 			}
+			if (fault_va >= USER_HEAP_START && fault_va < USER_HEAP_MAX) {
+				if ((!(permissions & PERM_AVAILABLE))) {
+					cprintf("not available\n");
+					sched_kill_env(curenv->env_id);
+				}
+			}
 
 
 			/*if((!(permissions & PERM_WRITEABLE))&& (permissions & PERM_PRESENT)){

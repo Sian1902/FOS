@@ -151,17 +151,23 @@ void free_user_mem(struct Env* e, uint32 virtual_address, uint32 size)
 	/*==========================================================================*/
 	//TODO: [PROJECT'23.MS2 - #12] [2] USER HEAP - free_user_mem() [Kernel Side]
 	/*REMOVE THESE LINES BEFORE START CODING */
-	inctst();
-	return;
 	/*==========================================================================*/
 
 	// Write your code here, remove the panic and write your code
-	panic("free_user_mem() is not implemented yet...!!");
+    uint32 start=virtual_address;
+     uint32* pageDir=e->env_page_directory;
+     while(size--)
+     {
+    		     pt_set_page_permissions(pageDir,start,0,PERM_AVAILABLE);
+    		     pf_remove_env_page(e, start);
+                 env_page_ws_invalidate( e,  start);
+                 unmap_frame(pageDir,start);
 
+    			start+=PAGE_SIZE;
+     }
 	//TODO: [PROJECT'23.MS2 - BONUS#2] [2] USER HEAP - free_user_mem() IN O(1): removing page from WS List instead of searching the entire list
 
 }
-
 //=====================================
 // 2) FREE USER MEMORY (BUFFERING):
 //=====================================

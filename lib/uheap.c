@@ -44,7 +44,6 @@ void* malloc(uint32 size)
 	// Write your code here, remove the panic and write your code
 	//panic("malloc() is not implemented yet...!!");
 	if(size<=DYN_ALLOC_MAX_BLOCK_SIZE){
-		cprintf("calling block allocator!!!!!!!!!!!!!!!!!!!\n");
 		return alloc_block_FF(size);
 	}
 
@@ -99,27 +98,35 @@ void free(void* virtual_address)
 	//TODO: [PROJECT'23.MS2 - #11] [2] USER HEAP - free() [User Side]
 	// Write your code here, remove the panic and write your code
 	//panic("free() is not implemented yet...!!");
-	/*if (virtual_address >= (void*) kheap_start
-		      && virtual_address < (void*) kheap_segment_break) {
+	uint32 hardLimit=sys_hard_limit();
+
+	if (virtual_address >= (void*) USER_HEAP_START
+		      && virtual_address < (void*) hardLimit) {
 		    free_block(virtual_address);
 		  }
 	else if (virtual_address
-		      >= (void*) (kheap_hard_limit + PAGE_SIZE)&& virtual_address <(void*)KERNEL_HEAP_MAX){
-			 uint32* ptr_page_table;
-			 uint32 framesToBeFreed=get_frame_info(ptr_page_directory , (uint32)virtual_address ,&ptr_page_table)->numOfPages;
-			 uint32 startOfProcess=get_frame_info(ptr_page_directory , (uint32)virtual_address ,&ptr_page_table)->va;
-			 for(int i=0;i<framesToBeFreed;i++){
-				 unmap_frame(ptr_page_directory,startOfProcess);
-				 sys_free_user_mem();
-				 startOfProcess+=PAGE_SIZE;
-			 }
+		      >= (void*) (hardLimit + PAGE_SIZE)&& virtual_address <(void*)USER_HEAP_MAX){
+		uint32 numOfPages=0;
+		bool found=0;
+		for(int i = 0 ; i<122879;i++)
+		      {
 
-		 }
-		 else{
-			 panic("can't free");
-		 }
-*/
-	panic("asdazsd");
+		    	  if(arrADD[i]==(uint32)virtual_address){
+		    		  numOfPages++;
+		    		  arrADD[i]=0;
+		    		  found=1;
+		    	  }
+		    	  else if(found&&(void*)arrADD[i]!=virtual_address){
+		    		  break;
+		    	  }
+
+			/* if(i!=122878 &&(void*)arrADD[i]==virtual_address&&(void*)arrADD[i+1]!=virtual_address)
+
+		    		  break;*/
+		      }
+		uint32 iterator = (uint32) virtual_address;
+		sys_free_user_mem(iterator,numOfPages);
+}
 }
 
 

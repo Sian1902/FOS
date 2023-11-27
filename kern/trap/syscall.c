@@ -496,9 +496,10 @@ void* sys_sbrk(int increment)
 		//MS2: COMMENT THIS LINE BEFORE START CODING====
 		//return (void*)-1 ;
 		//====================================================
+/*
 
-		/*2023*/
-		/* increment > 0: move the segment break of the current user program to increase the size of its heap,
+		2023
+		 increment > 0: move the segment break of the current user program to increase the size of its heap,
 		 * 				you should allocate NOTHING,
 		 * 				and returns the address of the previous break (i.e. the beginning of newly mapped memory).
 		 * increment = 0: just return the current position of the segment break
@@ -515,53 +516,59 @@ void* sys_sbrk(int increment)
 		 * 		or the break exceed the limit of the dynamic allocator. If sys_sbrk fails, the net effect should
 		 * 		be that sys_sbrk returns (void*) -1 and that the segment break and the process heap are unaffected.
 		 * 		You might have to undo any operations you have done so far in this case.
-		 */
+*/
+
 		struct Env* env = curenv; //the current running Environment to adjust its break limit
+
 		uint32 sb= (uint32)env->segmentBreak;
-		uint32 hl= (uint32)env->hardLimit;
-		uint32 envs = (uint32)env->start;
-		if(sb+increment>=hl){
-			return (void*)-1;
-		}
-		if(sb+increment<envs){
-			return (void*)-1;
-		}
-		uint32* lastBreak = env->segmentBreak;
-		if(increment==0){
-			return lastBreak;
-		}
-		if(increment>0){
-			cprintf("inc more than zero !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-			uint32 inc=ROUNDUP(increment,PAGE_SIZE);
-			uint32 start=(uint32)lastBreak;
-		    uint32* ptr_page_table;
-		    env->segmentBreak+=inc;
-		    int ret=get_page_table(env->env_page_directory,start,&ptr_page_table);
-		    if(ret==TABLE_NOT_EXIST){
-		    	create_page_table(env->env_page_directory,start);
-		    }
-		    while(start<(uint32)env->segmentBreak){
-		    	pt_set_page_permissions(env->env_page_directory,start,PERM_WRITEABLE|PERM_AVAILABLE,0);
-		    	start+=PAGE_SIZE;
-		    }
-		    env->segmentBreak=ROUNDUP(env->segmentBreak,PAGE_SIZE);
-		    return lastBreak;
-		}
-		else{
-			uint32 dec=-1*increment;
-			ROUNDDOWN(increment,PAGE_SIZE);
-		    dec/=PAGE_SIZE;
-		    sb+= increment;
-		    env->segmentBreak= (uint32*)sb;
-		    for(int i=0;i<dec;i++){
-		    	pt_set_page_permissions(env->env_page_directory,(uint32)env->segmentBreak+(i*PAGE_SIZE),0,PERM_PRESENT|PERM_WRITEABLE|PERM_USER|PERM_AVAILABLE);
-		        env_page_ws_invalidate(env,((uint32)env->segmentBreak+(i*PAGE_SIZE)));
-		    }
+				uint32 hl= (uint32)env->hardLimit;
+				uint32 envs = (uint32)env->start;
+				if(sb+increment>=hl){
+					return (void*)-1;
+				}
+				if(sb+increment<envs){
+					return (void*)-1;
+				}
+				uint32* lastBreak = (uint32*)env->segmentBreak;
+				if(increment==0){
+					return lastBreak;
+				}
+				if(increment>0){
+					env->segmentBreak=ROUNDUP(env->segmentBreak,PAGE_SIZE);
+                    lastBreak=(uint32*)env->segmentBreak;
+                    sb=env->segmentBreak;
+					uint32 inc=ROUNDUP(increment,PAGE_SIZE);
+					uint32 start=(uint32)lastBreak;
+				    uint32* ptr_page_table;
+				    env->segmentBreak+=inc;
 
-		    return env->segmentBreak;
-		}
+
+				    while(start<(uint32)env->segmentBreak){
+				    	 int ret=get_page_table(env->env_page_directory,start,&ptr_page_table);
+				    			    if(ret==TABLE_NOT_EXIST){
+				    			    	create_page_table(env->env_page_directory,start);
+				    			    }
+				    	pt_set_page_permissions(env->env_page_directory,start,PERM_WRITEABLE|PERM_AVAILABLE,0);
+				    	start+=PAGE_SIZE;
+				    }
+				    //env->segmentBreak=ROUNDUP(env->segmentBreak,PAGE_SIZE);
+
+				    return lastBreak;
+				}
+				else{
+					uint32 dec=-1*increment;
+					ROUNDDOWN(increment,PAGE_SIZE);
+				    dec/=PAGE_SIZE;
+				    sb+= increment;
+				    env->segmentBreak= (uint32)sb;
+				    for(int i=0;i<dec;i++){
+				    	pt_set_page_permissions(env->env_page_directory,(uint32)env->segmentBreak+(i*PAGE_SIZE),0,PERM_PRESENT|PERM_WRITEABLE|PERM_USER|PERM_AVAILABLE);
+				        env_page_ws_invalidate(env,((uint32)env->segmentBreak+(i*PAGE_SIZE)));
+				    }
+
+				    return (uint32*)env->segmentBreak;
+				}
 }
-
 
 /**************************************************************************/
 /************************* SYSTEM CALLS HANDLER ***************************/

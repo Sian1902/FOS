@@ -52,6 +52,7 @@ void _main(void)
 		is_correct = 1;
 		void* curVA = (void*) USER_HEAP_START ;
 		uint32 actualSize;
+		cprintf("checking addresses\n");
 		for (int i = 0; i < numOfAllocs; ++i)
 		{
 			for (int j = 0; j < allocCntPerSize; ++j)
@@ -60,14 +61,17 @@ void _main(void)
 				va = startVAs[idx] = malloc(actualSize);
 				midVAs[idx] = va + actualSize/2 ;
 				endVAs[idx] = va + actualSize - sizeof(short);
+
 				//Check returned va
 				if(va == NULL || (va < curVA))
 				{
 					if (is_correct)
 					{
+
 						is_correct = 0;
 						cprintf("alloc_block_xx #1.%d: WRONG ALLOC - alloc_block_xx return wrong address. Expected %x, Actual %x\n", idx, curVA + sizeOfMetaData() ,va);
 					}
+
 				}
 				curVA += allocSizes[i] ;
 
@@ -89,12 +93,13 @@ void _main(void)
 			//if (is_correct == 0)
 			//break;
 		}
+		cprintf("finished loop \n");
 		if (is_correct)
 		{
 			eval += 30;
 		}
 	}
-
+	cprintf("passed first scoop\n");
 	//====================================================================//
 	/*INITIAL ALLOC Scenario 2: Check stored data inside each allocated block*/
 	cprintf("	2: Check stored data inside each allocated block\n\n") ;
