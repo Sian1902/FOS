@@ -115,8 +115,6 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 
 
 					if(notFoudHeap&&notFoudStack){
-						cprintf("fault add %x\n",fault_va);
-						cprintf("not heap or stack\n");
 						sched_kill_env(curenv->env_id);
 					}
 
@@ -136,13 +134,14 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 	else
 	{
 
+
 		//cprintf("REPLACEMENT=========================WS Size = %d\n", wsSize );
 		//refer to the project presentation and documentation for details
 		if(isPageReplacmentAlgorithmFIFO())
 		{
-			//TODO: [PROJECT'23.MS3 - #1] [1] PAGE FAULT HANDLER - FIFO Replacement
-			// Write your code here, remove the panic and write your code
-			panic("page_fault_handler() FIFO Replacement is not implemented yet...!!");
+			// `"page_fault_handler() FIFO Replacement is not implemented yet...!!");
+			struct WorkingSetElement* first= curenv->page_WS_list.lh_first;
+
 		}
 		if(isPageReplacmentAlgorithmLRU(PG_REP_LRU_LISTS_APPROX))
 		{

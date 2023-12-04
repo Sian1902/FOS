@@ -351,9 +351,11 @@ void fault_handler(struct Trapframe *tf)
 	//2017: Check stack underflow for User
 	else
 	{
-		//cprintf("trap from USER\n");
-		if (fault_va >= USTACKTOP && fault_va < USER_TOP)
+
+		if (fault_va >= USTACKTOP && fault_va < USER_TOP){
+		/*	cprintf("trap from USER add = %x\n",fault_va);*/
 			panic("User: stack underflow exception!");
+		}
 	}
 
 	//get a pointer to the environment that caused the fault at runtime
@@ -394,11 +396,12 @@ void fault_handler(struct Trapframe *tf)
 
 			}
 			if (fault_va >= USER_HEAP_START && fault_va < USER_HEAP_MAX) {
-				if ((!(permissions & PERM_AVAILABLE))) {
+				if ((!(permissions & PERM_AVAILABLE))&&(!(permissions&PERM_PRESENT))) {
 					cprintf("not available\n");
 					sched_kill_env(curenv->env_id);
 				}
 			}
+
 
 
 			/*if((!(permissions & PERM_WRITEABLE))&& (permissions & PERM_PRESENT)){
