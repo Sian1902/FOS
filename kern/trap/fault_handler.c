@@ -84,7 +84,7 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 		int iWS =curenv->page_last_WS_index;
 		uint32 wsSize = env_page_ws_get_size(curenv);
 #endif
-
+struct WorkingSetElement* ptr_replacement = curenv->page_WS_list.lh_first;
 	if(wsSize < (curenv->page_WS_max_size))
 	{
 		//cprintf("PLACEMENT=========================WS Size = %d\n", wsSize );
@@ -119,9 +119,17 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 						cprintf("not heap or stack\n");
 						sched_kill_env(curenv->env_id);
 					}
-
 					struct WorkingSetElement* object =env_page_ws_list_create_element(curenv,fault_va);
 					LIST_INSERT_TAIL(&curenv->page_WS_list, object);
+					if(curenv->page_WS_list.size==(curenv->page_WS_max_size))
+					{
+						ptr_replacement=curenv->page_WS_list.lh_first;
+					}
+					else if(ptr_replacement==curenv->page_WS_list.lh_last)
+					{
+						ptr_replacement=curenv->page_WS_list.lh_last->prev_next_info.le_next;
+					}
+
 					if((curenv->page_WS_list.size) == (curenv->page_WS_max_size)){
 						curenv->page_last_WS_element=curenv->page_WS_list.lh_first;
 						curenv->page_last_WS_index=0;
@@ -142,7 +150,50 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 		{
 			//TODO: [PROJECT'23.MS3 - #1] [1] PAGE FAULT HANDLER - FIFO Replacement
 			// Write your code here, remove the panic and write your code
-			panic("page_fault_handler() FIFO Replacement is not implemented yet...!!");
+			struct FrameInfo* frame;
+							uint32* dir=curenv->env_page_directory;
+							int ret=allocate_frame(&frame);
+
+							if(ret!=0){
+								sched_kill_env(curenv->env_id);
+							}
+							map_frame(dir,frame,fault_va,PERM_WRITEABLE|PERM_USER);
+
+							int retpage=pf_read_env_page(curenv,(uint32*)fault_va);
+							int permissions=pt_get_page_permissions(dir,fault_va);
+							bool notFoudStack=0;
+							bool notFoudHeap=0;
+							if(retpage==E_PAGE_NOT_EXIST_IN_PF){
+								if(fault_va<USER_HEAP_START||fault_va>=USER_HEAP_MAX){
+									notFoudHeap=1;
+								}
+								if(fault_va<USTACKBOTTOM||fault_va>=USTACKTOP){
+									notFoudStack=1;
+								}
+							}
+
+
+							if(notFoudHeap&&notFoudStack){
+								cprintf("fault add %x\n",fault_va);
+								cprintf("not heap or stack\n");
+								sched_kill_env(curenv->env_id);
+							}
+							struct WorkingSetElement* object =env_page_ws_list_create_element(curenv,fault_va);
+			struct WorkingSetElement* deleted_element = ptr_replacement;
+			if(ptr_replacement==curenv->page_WS_list.lh_last)
+			{
+				free_user_mem(curenv, deleted_element->virtual_address, 1);
+		         ptr_replacement=curenv->page_WS_list.lh_first;
+				 LIST_INSERT_TAIL(&curenv->page_WS_list, object);
+
+			}
+			else
+			{
+				ptr_replacement= ptr_replacement->prev_next_info.le_next;
+				free_user_mem(curenv, deleted_element->virtual_address, 1);
+		       LIST_INSERT_BEFORE(&curenv->page_WS_list, ptr_replacement, object);
+			}
+
 		}
 		if(isPageReplacmentAlgorithmLRU(PG_REP_LRU_LISTS_APPROX))
 		{
