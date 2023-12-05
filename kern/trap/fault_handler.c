@@ -84,7 +84,7 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 		int iWS =curenv->page_last_WS_index;
 		uint32 wsSize = env_page_ws_get_size(curenv);
 #endif
-struct WorkingSetElement* ptr_replacement = curenv->page_WS_list.lh_first;
+
 	if(wsSize < (curenv->page_WS_max_size))
 	{
 		//cprintf("PLACEMENT=========================WS Size = %d\n", wsSize );
@@ -120,15 +120,10 @@ struct WorkingSetElement* ptr_replacement = curenv->page_WS_list.lh_first;
 						sched_kill_env(curenv->env_id);
 					}
 					struct WorkingSetElement* object =env_page_ws_list_create_element(curenv,fault_va);
+
 					LIST_INSERT_TAIL(&curenv->page_WS_list, object);
-					if(curenv->page_WS_list.size==(curenv->page_WS_max_size))
-					{
-						ptr_replacement=curenv->page_WS_list.lh_first;
-					}
-					else if(ptr_replacement==curenv->page_WS_list.lh_last)
-					{
-						ptr_replacement=curenv->page_WS_list.lh_last->prev_next_info.le_next;
-					}
+
+
 
 					if((curenv->page_WS_list.size) == (curenv->page_WS_max_size)){
 						curenv->page_last_WS_element=curenv->page_WS_list.lh_first;
@@ -158,7 +153,7 @@ struct WorkingSetElement* ptr_replacement = curenv->page_WS_list.lh_first;
 								sched_kill_env(curenv->env_id);
 							}
 							map_frame(dir,frame,fault_va,PERM_WRITEABLE|PERM_USER);
-
+							//allocate_user_mem(curenv, fault_va, 1);
 							int retpage=pf_read_env_page(curenv,(uint32*)fault_va);
 							int permissions=pt_get_page_permissions(dir,fault_va);
 							bool notFoudStack=0;
@@ -178,25 +173,41 @@ struct WorkingSetElement* ptr_replacement = curenv->page_WS_list.lh_first;
 								cprintf("not heap or stack\n");
 								sched_kill_env(curenv->env_id);
 							}
-							struct WorkingSetElement* object =env_page_ws_list_create_element(curenv,fault_va);
-			struct WorkingSetElement* deleted_element = ptr_replacement;
-			if(ptr_replacement==curenv->page_WS_list.lh_last)
+			struct WorkingSetElement* object =env_page_ws_list_create_element(curenv,fault_va);
+			struct WorkingSetElement* deleted_element = curenv->page_last_WS_element;
+			if(curenv->page_last_WS_element==curenv->page_WS_list.lh_last)
+					{
+						 curenv->page_last_WS_element=curenv->page_WS_list.lh_first;
+					}
+			        else
+				     {
+						curenv->page_last_WS_element = curenv->page_last_WS_element->prev_next_info.le_next;
+					 }
+			int perms = pt_get_page_permissions(dir,deleted_element->virtual_address);
+			if(perms & PERM_MODIFIED)
 			{
-				free_user_mem(curenv, deleted_element->virtual_address, 1);
-		         ptr_replacement=curenv->page_WS_list.lh_first;
-				 LIST_INSERT_TAIL(&curenv->page_WS_list, object);
+				uint32* ptr_page;
+				get_page_table(dir,deleted_element->virtual_address,&ptr_page);
+				struct FrameInfo* temp = get_frame_info(dir,deleted_element->virtual_address,&ptr_page);
+				pf_update_env_page(curenv,deleted_element->virtual_address , temp);
 
 			}
-			else
-			{
-				ptr_replacement= ptr_replacement->prev_next_info.le_next;
-				free_user_mem(curenv, deleted_element->virtual_address, 1);
-		       LIST_INSERT_BEFORE(&curenv->page_WS_list, ptr_replacement, object);
-			}
+            unmap_frame(dir,deleted_element->virtual_address);
+            env_page_ws_invalidate( curenv,  deleted_element->virtual_address);
+            if(curenv->page_last_WS_element==curenv->page_WS_list.lh_first)
+            {
+				 LIST_INSERT_TAIL(&curenv->page_WS_list, object);
+
+            }
+            else
+            {
+			       LIST_INSERT_BEFORE(&curenv->page_WS_list, curenv->page_last_WS_element, object);
+            }
 
 		}
 		if(isPageReplacmentAlgorithmLRU(PG_REP_LRU_LISTS_APPROX))
 		{
+
 			//TODO: [PROJECT'23.MS3 - #2] [1] PAGE FAULT HANDLER - LRU Replacement
 			// Write your code here, remove the panic and write your code
 			panic("page_fault_handler() LRU Replacement is not implemented yet...!!");
