@@ -269,13 +269,21 @@ int sys_pf_calculate_allocated_pages(void)
 /*******************************/
 void sys_free_user_mem(uint32 virtual_address, uint32 size)
 {
+	cprintf("******************************* sys free****************\n");
+
 	if(isBufferingEnabled())
 	{
+		cprintf("******************************* sys free 2 ****************\n");
+
 		__free_user_mem_with_buffering(curenv, virtual_address, size);
 	}
 	else
 	{
+		cprintf("******************************* sys free 3****************\n");
+
 		free_user_mem(curenv, virtual_address, size);
+		cprintf("******************************* sys free 4****************\n");
+
 	}
 	return;
 }
@@ -589,16 +597,23 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 		    case SYS_free_user_mem:
 		    	if((uint32*)a1==NULL||(uint32*)a1==NULL){
 		    		sched_kill_env(curenv->env_id);
+
 		    	}
-		    	else if(a1>=USER_LIMIT||a2>=PAGE_SIZE){
+		    	else if(a1>=USER_LIMIT/*||a2>=PAGE_SIZE*/){
+
 		    		    		sched_kill_env(curenv->env_id);
+
 		    		    	}
 		    	else if(a1<0||a2<0){
+
 		    		sched_kill_env(curenv->env_id);
+
 		    	}
 
 		    	else{
+
 		        sys_free_user_mem(a1,a2);
+
 		        return 0;
 		    	}
 		        break;

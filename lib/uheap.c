@@ -98,6 +98,8 @@ void free(void* virtual_address)
 	//TODO: [PROJECT'23.MS2 - #11] [2] USER HEAP - free() [User Side]
 	// Write your code here, remove the panic and write your code
 	//panic("free() is not implemented yet...!!");
+	 cprintf("free  1 -------------------------------");
+
 	uint32 hardLimit=sys_hard_limit();
 
 	if (virtual_address >= (void*) USER_HEAP_START
@@ -125,7 +127,10 @@ void free(void* virtual_address)
 		    		  break;*/
 		      }
 		uint32 iterator = (uint32) virtual_address;
+		 cprintf("free  2 -------------------------------");
 		sys_free_user_mem(iterator,numOfPages);
+		 cprintf("free  3 -------------------------------");
+
 }
 }
 
