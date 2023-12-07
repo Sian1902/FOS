@@ -385,18 +385,23 @@ void fault_handler(struct Trapframe *tf)
 			if (fault_va > USER_LIMIT/*>=KERNEL_HEAP_START && fault_va < KERNEL_HEAP_MAX*/) {
 				cprintf("killing out of range\n");
 				sched_kill_env(curenv->env_id);
+				cprintf("ernel -------------------------------");
 				//isFault =1;
 			}
 
 			if ((!(permissions & PERM_WRITEABLE))&&(permissions & PERM_PRESENT)) {
 				cprintf("killing\n");
 				sched_kill_env(curenv->env_id);
+				cprintf("not WRITEABLE -------------------------------");
+
 
 			}
 			if (fault_va >= USER_HEAP_START && fault_va < USER_HEAP_MAX) {
 				if ((!(permissions & PERM_AVAILABLE))) {
 					cprintf("not available\n");
 					sched_kill_env(curenv->env_id);
+					cprintf("not avlbl -------------------------------");
+
 				}
 			}
 

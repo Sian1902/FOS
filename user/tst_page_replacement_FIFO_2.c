@@ -69,7 +69,6 @@ void _main(void)
 		found = sys_check_WS_list(expectedMidVAs, 11, 0x807000, 1);
 		if (found != 1) panic("Page FIFO algo failed.. trace it by printing WS before and after page fault");
 	}
-
 	//char* tempArr = malloc(4*PAGE_SIZE);
 	sys_allocate_user_mem((uint32)tempArr, tempArrSize);
 	//cprintf("1\n");
@@ -82,7 +81,9 @@ void _main(void)
 
 	//cprintf("2\n");
 
-	sys_free_user_mem((uint32)tempArr, tempArrSize);
+	//sys_free_user_mem((uint32)tempArr, tempArrSize);
+	sys_free_user_mem((uint32) tempArr, tempArrSize);
+
 
 	//cprintf("3\n");
 
