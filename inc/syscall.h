@@ -58,6 +58,7 @@ enum
 	SYS_allocate_user_mem,
 	SYS_hard_limit,
 	SYS_get_perm,
+	SYS_set_env_nice_value,
 	//=====================================================================
 	NSYSCALLS
 };

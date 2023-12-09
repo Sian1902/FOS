@@ -159,6 +159,10 @@ struct Env {
 	//2020
 	uint32 nPageIn, nPageOut, nNewPageAdded;
 	uint32 nClocks ;
+	//2024
+	uint32 nice;
+	uint32 recentCPU;
+//	uint32 priority;
 
 };
 

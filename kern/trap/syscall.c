@@ -48,7 +48,6 @@ static void sys_cputc(const char c)
 	cprintf("%c",c);
 }
 
-
 // Read a character from the system console.
 // Returns the character.
 static int sys_cgetc(void)
@@ -299,7 +298,10 @@ void sys_allocate_chunk(uint32 virtual_address, uint32 size, uint32 perms)
 	allocate_chunk(curenv->env_page_directory, virtual_address, size, perms);
 	return;
 }
-
+void sys_env_set_nice(struct Env* e,int nice){
+	env_set_nice(e,nice);
+	return;
+}
 //2014
 void sys_move_user_mem(uint32 src_virtual_address, uint32 dst_virtual_address, uint32 size)
 {
@@ -827,6 +829,8 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 		return 	-E_INVAL;
 	case SYS_hard_limit:
 		return sys_hard_limit();
+	case SYS_set_env_nice_value:
+		return sys_env_set_nice((struct Env*)a1,(int)a2);
 /*	case SYS_get_perm:
 		return sys_get_perm(a1);*/
 
