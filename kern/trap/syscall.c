@@ -830,7 +830,7 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 	case SYS_hard_limit:
 		return sys_hard_limit();
 	case SYS_set_env_nice_value:
-		return sys_env_set_nice((struct Env*)a1,(int)a2);
+		//return sys_env_set_nice((struct Env*)a1,(int)a2);
 /*	case SYS_get_perm:
 		return sys_get_perm(a1);*/
 
