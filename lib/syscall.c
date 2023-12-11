@@ -366,6 +366,6 @@ uint32 sys_get_perm(uint32 virtual_address){
 	return syscall(SYS_get_perm,virtual_address,0,0,0,0);
 }
 void sys_env_set_nice(struct Env*e,int nice){
-	//syscall(SYS_set_env_nice_value,e,nice,0,0,0);
+	syscall(SYS_set_env_nice_value,(int)e,nice,0,0,0);
 	return;
 }
