@@ -72,5 +72,5 @@ void sched_init();
 void clock_interrupt_handler();
 void update_WS_time_stamps();
 //2024
-int loadAVG;
+fixed_point_t loadAVG;
 #endif	// !FOS_KERN_SCHED_H

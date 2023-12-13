@@ -168,13 +168,14 @@ void sched_init_BSD(uint8 numOfLevels, uint8 quantum)
 	//panic("Not implemented yet");
 
 	num_of_ready_queues=numOfLevels;
-	quantums=kmalloc(sizeof(uint8)*numOfLevels);
+	quantums=kmalloc(sizeof(uint8));
 	env_ready_queues=kmalloc(sizeof(struct Env_Queue)*num_of_ready_queues);
-	for(int i=0;i<num_of_ready_queues;i++){
-		quantums[i]=quantum;
-		kclock_set_quantum(quantums[i]);
+			quantums[0]=quantum;
+		kclock_set_quantum(quantums[0]);
+		for(int i=0;i<num_of_ready_queues;i++){
 		init_queue(&(env_ready_queues[i]));
-	}
+		}
+
 
 	//=========================================
 	//DON'T CHANGE THESE LINES=================
@@ -206,21 +207,65 @@ struct Env* fos_scheduler_BSD()
 	//panic("Not implemented yet");
     struct Env* selectedQUEUE=NULL;
     for(int i=0;i<num_of_ready_queues;i++){
-    	if()
-    }
-}
+    	if(queue_size(&env_ready_queues[i])){
 
+    		selectedQUEUE=dequeue(&env_ready_queues[i]);
+    		enqueue(&env_ready_queues[PRI_MAX-curenv->priority],curenv);
+    		kclock_set_quantum(*quantums);
+    		selectedQUEUE->env_status=ENV_RUNNABLE;
+    		break;
+    	}
+    }
+    return selectedQUEUE;
+}
 //========================================
 // [8] Clock Interrupt Handler
 //	  (Automatically Called Every Quantum)
 //========================================
+
 void clock_interrupt_handler()
 {
 	//TODO: [PROJECT'23.MS3 - #5] [2] BSD SCHEDULER - Your code is here
 	{
 
+    if((ticks*quantums[0])/1000!=(ticks-1*quantums[0])/1000){
+    	int readyProc=1;
+    	for(int i=0;i<num_of_ready_queues;i++){
+    		readyProc+= queue_size(&env_ready_queues[i]);
+    	}
+    	fixed_point_t ready=fix_int(readyProc);
+    	fixed_point_t firstHalf=fix_unscale(fix_scale(loadAVG,59),60);
+    	fixed_point_t secondHalf=fix_unscale(ready,60);
+    	loadAVG=fix_add(firstHalf,secondHalf);
+    	for(int i=0;i<num_of_ready_queues;i++){
+    		int n=queue_size(&env_ready_queues[i]);
+    		for(int j=0;j<n;j++){
+    			struct Env* cur=dequeue(&env_ready_queues[i]);
+    			fixed_point_t newRecent=fix_scale(loadAVG,2);
+    			newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
+    			newRecent=fix_mul(newRecent,cur->recentCPU);
+    			newRecent=fix_add(newRecent,fix_int(cur->nice));
+    			cur->recentCPU=newRecent;
+    			enqueue(&env_ready_queues[i],cur);
+    		}
+    	}
+    }
+	fixed_point_t newRecent=fix_scale(loadAVG,2);
+	newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
+	newRecent=fix_mul(newRecent,curenv->recentCPU);
+	newRecent=fix_add(newRecent,fix_int(curenv->nice));
+	curenv->recentCPU=newRecent;
 
-
+		if (ticks % 4 == 0) {
+			for (int i = 0; i < num_of_ready_queues; i++) {
+				int n = queue_size(&env_ready_queues[i]);
+				for (int j = 0; j < n; j++) {
+					struct Env* cur = dequeue(&env_ready_queues[i]);
+					env_set_nice(cur,cur->nice);
+					enqueue(&env_ready_queues[PRI_MAX-cur->priority],cur);
+				}
+			}
+			}
 	}
 
 
