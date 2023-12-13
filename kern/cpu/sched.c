@@ -206,11 +206,14 @@ struct Env* fos_scheduler_BSD()
 	//Comment the following line
 	//panic("Not implemented yet");
     struct Env* selectedQUEUE=NULL;
+    if(curenv != NULL)
+	{
+    	enqueue(&env_ready_queues[PRI_MAX-curenv->priority],curenv);
+	}
+
     for(int i=0;i<num_of_ready_queues;i++){
     	if(queue_size(&env_ready_queues[i])){
-
     		selectedQUEUE=dequeue(&env_ready_queues[i]);
-    		enqueue(&env_ready_queues[PRI_MAX-curenv->priority],curenv);
     		kclock_set_quantum(*quantums);
     		selectedQUEUE->env_status=ENV_RUNNABLE;
     		break;
@@ -249,13 +252,15 @@ void clock_interrupt_handler()
     			enqueue(&env_ready_queues[i],cur);
     		}
     	}
-    }
-	fixed_point_t newRecent=fix_scale(loadAVG,2);
-	newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
-	newRecent=fix_mul(newRecent,curenv->recentCPU);
-	newRecent=fix_add(newRecent,fix_int(curenv->nice));
-	curenv->recentCPU=newRecent;
 
+    }
+
+    if(curenv != NULL)
+        	{fixed_point_t newRecent=fix_scale(loadAVG,2);
+        		newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
+        		newRecent=fix_mul(newRecent,curenv->recentCPU);
+        		newRecent=fix_add(newRecent,fix_int(curenv->nice));
+        		curenv->recentCPU=newRecent;}
 		if (ticks % 4 == 0) {
 			for (int i = 0; i < num_of_ready_queues; i++) {
 				int n = queue_size(&env_ready_queues[i]);
@@ -265,9 +270,14 @@ void clock_interrupt_handler()
 					enqueue(&env_ready_queues[PRI_MAX-cur->priority],cur);
 				}
 			}
+			for (int i = 0; i < num_of_ready_queues; i++) {
+							int n = queue_size(&env_ready_queues[i]);
+							for (int j = 0; j < n; j++) {
+
+							}
 			}
 	}
-
+	}
 
 	/********DON'T CHANGE THIS LINE***********/
 	ticks++ ;
