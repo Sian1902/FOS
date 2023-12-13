@@ -180,17 +180,25 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 			struct WorkingSetElement * object,* iterator;
 			bool found_in_Sec=0;
 			fault_va = ROUNDDOWN(fault_va,PAGE_SIZE);
-
-			LIST_FOREACH(iterator,&(curenv->SecondList)){
+			//
+			uint32* tmp_ptr;
+			struct FrameInfo* tmp_frame = get_frame_info(curenv->env_page_directory,fault_va,&tmp_ptr);
+			if(tmp_frame!=NULL)
+			{
+				cprintf("Hello ");
+				found_in_Sec=1;
+				object=tmp_frame->element;
+			}
+			/*LIST_FOREACH(iterator,&(curenv->SecondList)){
 				if (iterator->virtual_address==fault_va){
 					object=iterator;
 					found_in_Sec=1;
 					break;
 				}
-			}
+			}*/
 			if(found_in_Sec){
-
 				LIST_REMOVE(&(curenv->SecondList), object);
+				cprintf("world \n ");
 				pt_set_page_permissions(curenv->env_page_directory,object->virtual_address,PERM_PRESENT,0);
 
 			}
@@ -229,7 +237,9 @@ void page_fault_handler(struct Env * curenv, uint32 fault_va)
 								pt_set_page_permissions(curenv->env_page_directory,temp->virtual_address,0,PERM_PRESENT);
 								LIST_INSERT_HEAD(&(curenv->SecondList), temp);
 							}
-
+				            uint32* tmp_ptr2;
+							struct FrameInfo* tmp_frame2 = get_frame_info(curenv->env_page_directory,fault_va,&tmp_ptr2);
+				            tmp_frame2->element =object;
 							LIST_INSERT_HEAD(&(curenv->ActiveList), object);
 			}
 						else

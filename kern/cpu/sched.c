@@ -203,11 +203,12 @@ struct Env* fos_scheduler_BSD()
 	//TODO: [PROJECT'23.MS3 - #5] [2] BSD SCHEDULER - fos_scheduler_BSD
 	//Your code is here
 	//Comment the following line
-	//panic("Not implemented yet");
-    struct Env* selectedQUEUE=NULL;
+	panic("Not implemented yet");
+ /*   struct Env* selectedQUEUE=NULL;
     for(int i=0;i<num_of_ready_queues;i++){
     	if()
-    }
+    }*/
+
 }
 
 //========================================
