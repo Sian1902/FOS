@@ -558,7 +558,15 @@ void env_set_nice(struct Env* e, int nice_value)
 	//panic("Not implemented yet");
 	e->nice=nice_value;
 	int priNice=PRI_MAX-(e->nice/2);
+	if(priNice>PRI_MAX){
+		priNice=PRI_MAX;
+	}
+	else if(priNice<PRI_MIN){
+		priNice=PRI_MIN;
+	}
+	cprintf("before nice fix int\n");
 	fixed_point_t x=fix_int(priNice);
+	cprintf("nice fix int\n");
 	x=fix_sub(x,fix_unscale(e->recentCPU,4));
 	int finalValue=fix_round(x);
 	if(finalValue>PRI_MAX){

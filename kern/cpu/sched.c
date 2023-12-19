@@ -233,7 +233,9 @@ void clock_interrupt_handler()
     	for(int i=0;i<num_of_ready_queues;i++){
     		readyProc+= queue_size(&env_ready_queues[i]);
     	}
+    	cprintf("before first fix int\n");
     	fixed_point_t ready=fix_int(readyProc);
+    	cprintf("first fix int\n");
     	fixed_point_t firstHalf=fix_unscale(fix_scale(loadAVG,59),60);
     	fixed_point_t secondHalf=fix_unscale(ready,60);
     	loadAVG=fix_add(firstHalf,secondHalf);
@@ -242,18 +244,26 @@ void clock_interrupt_handler()
     		for(int j=0;j<n;j++){
     			struct Env* cur=dequeue(&env_ready_queues[i]);
     			fixed_point_t newRecent=fix_scale(loadAVG,2);
+    			cprintf("before second fix int\n");
     			newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
+    			cprintf("second fix int\n");
     			newRecent=fix_mul(newRecent,cur->recentCPU);
+    			cprintf("before third fix int\n");
     			newRecent=fix_add(newRecent,fix_int(cur->nice));
+    			cprintf("third fix int\n");
     			cur->recentCPU=newRecent;
     			enqueue(&env_ready_queues[i],cur);
     		}
     	}
     }
 	fixed_point_t newRecent=fix_scale(loadAVG,2);
+	cprintf("before fourth fix int\n");
 	newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
+	cprintf("fouurth fix int\n");
 	newRecent=fix_mul(newRecent,curenv->recentCPU);
+	cprintf("before fifth fix int\n");
 	newRecent=fix_add(newRecent,fix_int(curenv->nice));
+	cprintf("fifth fix int\n");
 	curenv->recentCPU=newRecent;
 
 		if (ticks % 4 == 0) {
