@@ -557,24 +557,31 @@ void env_set_nice(struct Env* e, int nice_value)
 	//Comment the following line
 	//panic("Not implemented yet");
 	e->nice=nice_value;
-	int priNice=PRI_MAX-(e->nice/2);
+	/*cprintf("passed nice %d ",e->nice);
+	cprintf("max priority %d ",PRI_MAX);*/
+	if(e->env_status==ENV_NEW){
+		return;
+	}
+	uint32 priNice=PRI_MAX-(e->nice*2);
+	/*cprintf("priNice before condition %d ",priNice);*/
 	if(priNice>PRI_MAX){
 		priNice=PRI_MAX;
 	}
 	else if(priNice<PRI_MIN){
 		priNice=PRI_MIN;
 	}
-	cprintf("before nice fix int\n");
+	/*cprintf("priNice %d ",priNice);*/
 	fixed_point_t x=fix_int(priNice);
-	cprintf("nice fix int\n");
 	x=fix_sub(x,fix_unscale(e->recentCPU,4));
-	int finalValue=fix_round(x);
+
+	int finalValue=fix_trunc(x);
 	if(finalValue>PRI_MAX){
 		finalValue=PRI_MAX;
 	}
 	else if(finalValue<PRI_MIN){
 		finalValue=PRI_MIN;
 	}
+	/*cprintf("final value %d envID %d \n",finalValue,e->env_id);*/
 	e->priority=finalValue;
 
 }

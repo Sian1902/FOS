@@ -206,15 +206,21 @@ struct Env* fos_scheduler_BSD()
 	//Comment the following line
 	//panic("Not implemented yet");
     struct Env* selectedQUEUE=NULL;
+    if(curenv != NULL)
+	{
+    	enqueue(&env_ready_queues[PRI_MAX-curenv->priority],curenv);
+	}
+
     for(int i=0;i<num_of_ready_queues;i++){
     	if(queue_size(&env_ready_queues[i])){
-
     		selectedQUEUE=dequeue(&env_ready_queues[i]);
-    		enqueue(&env_ready_queues[PRI_MAX-curenv->priority],curenv);
-    		kclock_set_quantum(*quantums);
-    		selectedQUEUE->env_status=ENV_RUNNABLE;
+    		kclock_set_quantum(quantums[0]);
+    		//selectedQUEUE->env_status=ENV_RUNNABLE;
     		break;
     	}
+    }
+    if(selectedQUEUE==NULL){
+    loadAVG=fix_int(0);
     }
     return selectedQUEUE;
 }
@@ -222,64 +228,81 @@ struct Env* fos_scheduler_BSD()
 // [8] Clock Interrupt Handler
 //	  (Automatically Called Every Quantum)
 //========================================
+bool secondPassed(){
+	uint32 curMS=quantums[0]*ticks;
+	uint32 prevMS=quantums[0]*(ticks-1);
+    uint32 curSec=curMS/1000;
+	uint32 prevSec=prevMS/1000;
+	curSec=ROUNDDOWN(curSec,1);
+	if(prevMS>0){
+	prevSec=ROUNDDOWN(prevSec,1);
+	}
+	else{
+	  prevSec=0;
+	}
+	if(curSec!=prevSec&&prevSec>0){
+		return 1;
+	}
 
+		return 0;
+
+}
 void clock_interrupt_handler()
 {
 	//TODO: [PROJECT'23.MS3 - #5] [2] BSD SCHEDULER - Your code is here
 	{
+		if(curenv!=NULL){
+				curenv->recentCPU=fix_add(curenv->recentCPU,fix_int(1));
+			}
+			if(ticks%4==0&&ticks!=0){
+				for(int i=0;i<num_of_ready_queues;i++){
+					int n= queue_size(&env_ready_queues[i]);
+					for(int j=0;j<n;j++){
+						struct Env* cur = dequeue(&env_ready_queues[i]);
+						env_set_nice(cur,cur->nice);
+						enqueue(&env_ready_queues[PRI_MAX-cur->priority], cur);
+					}
+				}
+				env_set_nice(curenv,curenv->nice);
+			}
 
-    if((ticks*quantums[0])/1000!=(ticks-1*quantums[0])/1000){
-    	int readyProc=1;
-    	for(int i=0;i<num_of_ready_queues;i++){
-    		readyProc+= queue_size(&env_ready_queues[i]);
-    	}
-    	cprintf("before first fix int\n");
-    	fixed_point_t ready=fix_int(readyProc);
-    	cprintf("first fix int\n");
-    	fixed_point_t firstHalf=fix_unscale(fix_scale(loadAVG,59),60);
-    	fixed_point_t secondHalf=fix_unscale(ready,60);
-    	loadAVG=fix_add(firstHalf,secondHalf);
-    	for(int i=0;i<num_of_ready_queues;i++){
-    		int n=queue_size(&env_ready_queues[i]);
-    		for(int j=0;j<n;j++){
-    			struct Env* cur=dequeue(&env_ready_queues[i]);
-    			fixed_point_t newRecent=fix_scale(loadAVG,2);
-    			cprintf("before second fix int\n");
-    			newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
-    			cprintf("second fix int\n");
-    			newRecent=fix_mul(newRecent,cur->recentCPU);
-    			cprintf("before third fix int\n");
-    			newRecent=fix_add(newRecent,fix_int(cur->nice));
-    			cprintf("third fix int\n");
-    			cur->recentCPU=newRecent;
-    			enqueue(&env_ready_queues[i],cur);
-    		}
-    	}
-    }
-	fixed_point_t newRecent=fix_scale(loadAVG,2);
-	cprintf("before fourth fix int\n");
-	newRecent=fix_div(newRecent,fix_scale(fix_add(loadAVG,fix_int(1)),2));
-	cprintf("fouurth fix int\n");
-	newRecent=fix_mul(newRecent,curenv->recentCPU);
-	cprintf("before fifth fix int\n");
-	newRecent=fix_add(newRecent,fix_int(curenv->nice));
-	cprintf("fifth fix int\n");
-	curenv->recentCPU=newRecent;
+		if (secondPassed()/*((ticks * quantums[0]) / 1000 != (ticks - 1 * quantums[0]) / 1000)&&ticks>0*/) {
+			int readyProc = 1;
+			for (int i = 0; i < num_of_ready_queues; i++) {
+				readyProc += queue_size(&env_ready_queues[i]);
+			}
+			fixed_point_t ready = fix_int(readyProc);
+			fixed_point_t firstHalf = fix_unscale(fix_scale(loadAVG, 59), 60);
+			fixed_point_t secondHalf = fix_unscale(ready, 60);
+			loadAVG = fix_add(firstHalf, secondHalf);
 
-		if (ticks % 4 == 0) {
 			for (int i = 0; i < num_of_ready_queues; i++) {
 				int n = queue_size(&env_ready_queues[i]);
 				for (int j = 0; j < n; j++) {
 					struct Env* cur = dequeue(&env_ready_queues[i]);
-					env_set_nice(cur,cur->nice);
-					enqueue(&env_ready_queues[PRI_MAX-cur->priority],cur);
+					fixed_point_t fixedNice = fix_int(cur->nice);
+					fixed_point_t newRec = fix_scale(loadAVG, 2);
+					newRec = fix_div(newRec, fix_add(newRec, fix_int(1)));
+					newRec = fix_mul(newRec, cur->recentCPU);
+					newRec = fix_add(newRec, fixedNice);
+					cur->recentCPU = newRec;
+					enqueue(&env_ready_queues[i], cur);
 				}
 			}
-			}
+			fixed_point_t fixedNice = fix_int(curenv->nice);
+			fixed_point_t newRec = fix_scale(loadAVG, 2);
+			newRec = fix_div(newRec, fix_add(newRec, fix_int(1)));
+			newRec = fix_mul(newRec, curenv->recentCPU);
+			newRec = fix_add(newRec, fixedNice);
+			curenv->recentCPU = newRec;
+
+
+		}
+
+
 	}
 
-
-	/********DON'T CHANGE THIS LINE***********/
+	/******DON'T CHANGE THIS LINE*********/
 	ticks++ ;
 	if(isPageReplacmentAlgorithmLRU(PG_REP_LRU_TIME_APPROX))
 	{
@@ -287,7 +310,7 @@ void clock_interrupt_handler()
 	}
 	//cprintf("Clock Handler\n") ;
 	fos_scheduler();
-	/*****************************************/
+	/*************************************/
 }
 
 //===================================================================
@@ -354,4 +377,3 @@ void update_WS_time_stamps()
 		}
 	}
 }
-

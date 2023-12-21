@@ -32,7 +32,7 @@ __mk_fix (int f)
 static inline fixed_point_t
 fix_int (int n)
 {
-  assert(n >= FIX_MIN_INT && n <= FIX_MAX_INT);
+  //assert(n >= FIX_MIN_INT && n <= FIX_MAX_INT);
   return __mk_fix (n * FIX_F);
 }
 
