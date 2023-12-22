@@ -591,7 +591,7 @@ int env_get_recent_cpu(struct Env* e)
 	//Your code is here
 	//Comment the following line
 	//panic("Not implemented yet");
-	return fix_round(e->recentCPU);
+	return fix_round(fix_scale(e->recentCPU,100));
 	//return 0;
 }
 int get_load_average()
