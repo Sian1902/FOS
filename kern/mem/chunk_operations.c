@@ -165,24 +165,25 @@ void free_user_mem(struct Env* e, uint32 virtual_address, uint32 size)
     			 start+=PAGE_SIZE;
 
      }
-cprintf("\n ******************** \n ws free b4 delete \n **************\n");
-	   env_page_ws_print(e);
+
 
      struct WorkingSetElement * iterator = e->page_WS_list.lh_first ;
-
+      uint32 cnt=0;
      while(1)
      {
     	 if(iterator == e->page_last_WS_element)
     	   {
     	     	      		break;
     	   }
+    	 if(cnt==e->page_WS_list.size){
+    		 break;
+    	 }
     	   struct WorkingSetElement * temp = iterator;
     	   iterator = iterator->prev_next_info.le_next;
     	   LIST_REMOVE(&(e->page_WS_list), temp);
     	   LIST_INSERT_TAIL(&(e->page_WS_list), temp);
-    	   cprintf("\n ******************** \n ws free after delete \n **************\n");
+    	   cnt++;
 
-    	   env_page_ws_print(e);
      }
 
 	//TODO: [PROJECT'23.MS2 - BONUS#2] [2] USER HEAP - free_user_mem() IN O(1): removing page from WS List instead of searching the entire list
