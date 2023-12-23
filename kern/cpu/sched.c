@@ -254,6 +254,7 @@ void clock_interrupt_handler()
 		if(curenv!=NULL){
 				curenv->recentCPU=fix_add(curenv->recentCPU,fix_int(1));
 			}
+		if(scheduler_method == SCH_BSD){
 			if(ticks%4==0&&ticks!=0){
 				for(int i=0;i<num_of_ready_queues;i++){
 					int n= queue_size(&env_ready_queues[i]);
@@ -265,6 +266,7 @@ void clock_interrupt_handler()
 				}
 				env_set_nice(curenv,curenv->nice);
 			}
+		}
 
 		if (secondPassed()/*((ticks * quantums[0]) / 1000 != (ticks - 1 * quantums[0]) / 1000)&&ticks>0*/) {
 			int readyProc = 1;

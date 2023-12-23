@@ -111,7 +111,6 @@ uint32 calculate_required_frames(uint32* page_directory, uint32 sva, uint32 size
 //======================================================
 /// functions used for USER HEAP (malloc, free, ...)
 //======================================================
-
 //=====================================
 // 1) ALLOCATE USER MEMORY:
 //=====================================
@@ -189,6 +188,7 @@ void free_user_mem(struct Env* e, uint32 virtual_address, uint32 size)
 	//TODO: [PROJECT'23.MS2 - BONUS#2] [2] USER HEAP - free_user_mem() IN O(1): removing page from WS List instead of searching the entire list
 
 }
+
 //=====================================
 // 2) FREE USER MEMORY (BUFFERING):
 //=====================================
